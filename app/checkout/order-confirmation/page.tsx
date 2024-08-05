@@ -28,11 +28,11 @@ const OrderConfirmation = () => {
   const [openAddressListDialog, setOpenAddressListDialog] = useState(false);
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
 
-  useEffect(() => {
-    if (!isLoggedIn && typeof window !== "undefined") {
-      window.location.replace("/cart");
-    }
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (!isLoggedIn && typeof window !== "undefined") {
+  //     window.location.replace("/cart");
+  //   }
+  // }, [isLoggedIn]);
 
   useEffect(() => {
     if (checkoutItems.length === 0) {

@@ -24,12 +24,12 @@ const MobilePage = () => {
   const { user } = useFetchUserProfile();
   const [openLogoutDialog, setOpenLogoutDialog] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      sessionStorage.setItem("originalUrl", pathname);
-      return router.push("/auth/authenticate");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     sessionStorage.setItem("originalUrl", pathname);
+  //     return router.push("/auth/authenticate");
+  //   }
+  // }, []);
 
   return (
     <>

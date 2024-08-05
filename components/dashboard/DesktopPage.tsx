@@ -35,11 +35,11 @@ const DesktopPage = () => {
     handleSecondConfirmationClose,
   } = useTopUpDialogs();
 
-  useEffect(() => {
-    if (!isLoggedIn && typeof window !== "undefined") {
-      window.location.replace("/");
-    }
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (!isLoggedIn && typeof window !== "undefined") {
+  //     window.location.replace("/");
+  //   }
+  // }, [isLoggedIn]);
 
   return (
     <>
