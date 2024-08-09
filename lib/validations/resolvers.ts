@@ -5,6 +5,7 @@ import {
   otpSchema,
   addAddressSchema,
   updateAddressSchema,
+  updateOrderStatusSchema,
 } from "@/lib/validations/schemas";
 
 /*********** SIGN UP FORM RESOLVER ***********/
@@ -21,3 +22,5 @@ export const addAddressResolver = yupResolver(addAddressSchema);
 
 /*********** UPDATE ADDRESS FORM RESOLVER ***********/
 export const updateAddressResolver = yupResolver(updateAddressSchema);
+
+export const updateOrderStatusResolver = yupResolver(updateOrderStatusSchema);

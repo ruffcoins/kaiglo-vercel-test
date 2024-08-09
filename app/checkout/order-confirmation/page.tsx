@@ -7,9 +7,9 @@ import { useCartContext } from "@/contexts/CartContext";
 import Image from "next/image";
 import { createSlug, truncate } from "@/lib/utils";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import NewAddressDialog from "@/components/address/dialogs/NewAddressDialog";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFetchUserProfile } from "@/hooks/queries/userProfile";
 import Shipping from "@/public/images/shipping-accent.svg";
 import AddressListDialog from "@/components/address/dialogs/AddressListDialog";
@@ -17,6 +17,23 @@ import { useGetAllAddresses } from "@/hooks/queries/address/getAllAddresses";
 import { IAddress } from "@/interfaces/address.interface";
 import PaymentDialog from "@/components/shared/PaymentDialog";
 import useAuth from "@/hooks/useAuth";
+import { useGetShippingCost } from "@/hooks/queries/getShippingCost";
+import React from "react";
+
+const BuyNowComponent = () => {
+  const searchParams = useSearchParams();
+  const buyNow = searchParams.get("buyNow");
+  return (
+    <Link href="/cart">
+      <ModifiedButton
+        type="button"
+        variant="secondary"
+        value={buyNow ? "View Cart" : "Modify Cart"}
+        className="rounded-full w-fit !h-fit text-sm py-1 px-3"
+      />
+    </Link>
+  );
+};
 
 const OrderConfirmation = () => {
   const { isLoggedIn } = useAuth();
@@ -27,12 +44,21 @@ const OrderConfirmation = () => {
   const { user } = useFetchUserProfile();
   const [openAddressListDialog, setOpenAddressListDialog] = useState(false);
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
+  const [lga, setLga] = useState<string | undefined>();
+  const [state, setState] = useState<string | undefined>();
 
-  // useEffect(() => {
-  //   if (!isLoggedIn && typeof window !== "undefined") {
-  //     window.location.replace("/cart");
-  //   }
-  // }, [isLoggedIn]);
+  const {
+    shippingCost,
+    fetchingShippingCost,
+    refetchShippingCost,
+    isRefetchingShippingCost,
+  } = useGetShippingCost(lga as string, state as string);
+
+  useEffect(() => {
+    if (!isLoggedIn && typeof window !== "undefined") {
+      window.location.replace("/cart");
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (checkoutItems.length === 0) {
@@ -60,11 +86,36 @@ const OrderConfirmation = () => {
 
   const handleAddressSelection = (address: IAddress) => {
     setCheckoutAddress(address);
+    setLga(address.city);
+    setState(address.state);
   };
 
   const proceedToCheckout = () => {
     setOpenPaymentDialog((prev) => !prev);
   };
+
+  const refetch = async () => {
+    await refetchShippingCost();
+  };
+
+  useEffect(() => {
+    if (checkoutAddress) {
+      setLga(checkoutAddress.city);
+      setState(checkoutAddress.state);
+      refetch();
+    }
+  }, [checkoutAddress, lga, state]);
+
+  const isCalculatingShippingCost =
+    fetchingShippingCost || isRefetchingShippingCost;
+  const formattedShippingCost = `₦${(Number(shippingCost?.price) || 0).toLocaleString()}`;
+
+  useEffect(() => {
+    if (shippingCost?.price === undefined) {
+      refetch();
+    }
+  }, [shippingCost]);
+
   return (
     <>
       <CartLayout>
@@ -164,14 +215,13 @@ const OrderConfirmation = () => {
                 <div className="rounded-xl bg-white w-full p-4 space-y-4 flex flex-col min-h-32 font-medium">
                   <div className="flex justify-between items-center">
                     <p>Selected Items</p>
-                    <Link href="/cart">
-                      <ModifiedButton
-                        type="button"
-                        variant="secondary"
-                        value="Modify Cart"
-                        className="rounded-full w-fit !h-fit text-sm py-1 px-3"
-                      />
-                    </Link>
+                    <Suspense
+                      fallback={
+                        <div className="bg-gray-200 h-10 w-40 animate-pulse"></div>
+                      }
+                    >
+                      <BuyNowComponent />
+                    </Suspense>
                   </div>
 
                   <div className="grid grid-cols-3 gap-4">
@@ -250,8 +300,8 @@ const OrderConfirmation = () => {
                 </div>
                 <ModifiedButton
                   variant="primary"
-                  // disabled={allItemsAreUnchecked(checkedItems)}
-                  className="w-fit font-medium rounded-full px-8 py-3"
+                  disabled={shippingCost?.price === undefined}
+                  className="w-fit font-medium rounded-full px-8 py-3 disabled:cursor-not-allowed"
                   type={"button"}
                   value="PLACE ORDER"
                   onClick={proceedToCheckout}
@@ -272,8 +322,11 @@ const OrderConfirmation = () => {
               <p className="flex items-center justify-between">
                 <span>Shipping Fees:</span>
                 <span className="font-medium text-right text-kaiglo_info-base">
-                  {/* ₦{subTotal.toLocaleString()} */}
-                  Select Address
+                  {checkoutAddress
+                    ? isCalculatingShippingCost
+                      ? "Calculating..."
+                      : formattedShippingCost
+                    : "Select Address"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
@@ -290,7 +343,10 @@ const OrderConfirmation = () => {
               <p className="flex items-center justify-between">
                 <span>Total Amount:</span>
                 <span className="font-medium text-xl">
-                  ₦{checkoutTotal.toLocaleString()}
+                  ₦
+                  {(
+                    checkoutTotal + (Number(shippingCost?.price) || 0)
+                  ).toLocaleString() ?? 0}
                 </span>
               </p>
             </div>
@@ -323,6 +379,9 @@ const OrderConfirmation = () => {
         <PaymentDialog
           open={openPaymentDialog}
           setOpen={setOpenPaymentDialog}
+          totalAmount={checkoutTotal}
+          lga={lga as string}
+          state={state as string}
         />
       )}
     </>

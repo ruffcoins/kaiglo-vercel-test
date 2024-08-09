@@ -137,59 +137,61 @@ const Referral = () => {
                   </p>
                 </div>
               ) : (
-                referral?.referredList.map((referral, index) => (
-                  <div
-                    key={index}
-                    className="border flex justify-between items-center p-2 rounded-lg mb-3"
-                  >
-                    <div className="gap-x-2 flex justify-start items-start">
-                      <Image
-                        src={Person}
-                        alt={"referral"}
-                        width={100}
-                        height={100}
-                        className="w-10 h-10"
-                      />
-                      <div className="space-y-1">
-                        <p className="font-medium text-sm">{referral.name}</p>
-                        <p className="text-xs uppercase text-kaiglo_grey-placeholder">
-                          {formatDate(referral.dateReferred)}
-                        </p>
+                <div className="h-[calc(100vh-28rem)] overflow-y-auto">
+                  {referral?.referredList.map((referral, index) => (
+                    <div
+                      key={index}
+                      className="border flex justify-between items-center p-2 rounded-lg mb-3"
+                    >
+                      <div className="gap-x-2 flex justify-start items-start">
+                        <Image
+                          src={Person}
+                          alt={"referral"}
+                          width={100}
+                          height={100}
+                          className="w-10 h-10"
+                        />
+                        <div className="space-y-1">
+                          <p className="font-medium text-sm">{referral.name}</p>
+                          <p className="text-xs uppercase text-kaiglo_grey-placeholder">
+                            {formatDate(referral.dateReferred)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div>
+                        {referral.paid ? (
+                          <div className="flex items-center space-x-4">
+                            <p className="font-bold text-kaiglo_brand-base">
+                              ₦{referral.amount.toLocaleString()}
+                            </p>
+                            <Image
+                              src={Verify}
+                              alt="Verify"
+                              width={100}
+                              height={100}
+                              className="w-6 h-6"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center space-x-4">
+                            <p className="text-kaiglo_accent-base font-bold">
+                              Pending
+                            </p>
+                            <Image
+                              src={Warning}
+                              alt="Warning"
+                              width={100}
+                              height={100}
+                              className="w-6 h-6 cursor-pointer"
+                              onClick={() => handleOpenInfo(referral.name)}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    <div>
-                      {referral.paid ? (
-                        <div className="flex items-center space-x-4">
-                          <p className="font-bold text-kaiglo_brand-base">
-                            ₦{referral.amount.toLocaleString()}
-                          </p>
-                          <Image
-                            src={Verify}
-                            alt="Verify"
-                            width={100}
-                            height={100}
-                            className="w-6 h-6"
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex items-center space-x-4">
-                          <p className="text-kaiglo_accent-base font-bold">
-                            Pending
-                          </p>
-                          <Image
-                            src={Warning}
-                            alt="Warning"
-                            width={100}
-                            height={100}
-                            className="w-6 h-6 cursor-pointer"
-                            onClick={() => handleOpenInfo(referral.name)}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </div>

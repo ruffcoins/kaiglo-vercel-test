@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { stateAndCities } from "@/constants/stateAndCities";
+import { useGetAllStatesAndCities } from "@/hooks/queries/address/getStatesAndCities";
 import { SetStateAction } from "react";
 
 const NewAddressDialog = ({
@@ -15,7 +15,7 @@ const NewAddressDialog = ({
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
 }) => {
-  const statesAndCities = stateAndCities;
+  const { statesAndCities } = useGetAllStatesAndCities();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -23,7 +23,10 @@ const NewAddressDialog = ({
         <DialogHeader>
           <DialogTitle>Add New Address</DialogTitle>
         </DialogHeader>
-        <AddAddressForm stateAndCities={statesAndCities} setOpen={setOpen} />
+        <AddAddressForm
+          stateAndCities={statesAndCities ?? []}
+          setOpen={setOpen}
+        />
       </DialogContent>
     </Dialog>
   );

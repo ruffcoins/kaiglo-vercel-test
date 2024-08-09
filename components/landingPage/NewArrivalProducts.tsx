@@ -2,58 +2,40 @@
 
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { Suspense, useEffect, useState } from "react";
 import ErrorComponent from "@/components/shared/ErrorComponent";
 import { useNewArrivalsProducts } from "@/hooks/queries/products/newArrivals";
-import ProductGrid from "@/components/product/ProductGrid";
+import ProductCardSkeleton from "../shared/ProductCardSkeleton";
+import useProductRowLength from "@/hooks/useProductRowLength";
+import ProductCard from "../product/ProductCard";
 
 const NewArrivalsProducts = () => {
+  const { length } = useProductRowLength();
   const {
     newArrivalsProducts,
     fetchingNewArrivalsProducts,
     newArrivalsProductsError,
-    newArrivalsProductsPaused,
     refetchNewArrivalsProducts,
   } = useNewArrivalsProducts();
-  const [screenWidth, setScreenWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 0,
-  );
-  const [numberOfProducts, setNumberOfProducts] = useState(0);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup the event listener on component unmount
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (screenWidth < 640) {
-      setNumberOfProducts(2);
-    } else if (screenWidth >= 768 && screenWidth < 1280) {
-      setNumberOfProducts(4);
-    } else if (screenWidth >= 1280 && screenWidth <= 1440) {
-      setNumberOfProducts(5);
-    } else {
-      setNumberOfProducts(6);
-    }
-  }, [screenWidth]);
 
   if (newArrivalsProductsError) {
     return (
       <ErrorComponent
-        message="Failed to load group buy products."
+        message="Failed to load new arrivals."
         action={refetchNewArrivalsProducts}
       />
     );
   }
 
-  if (!newArrivalsProducts || newArrivalsProducts.length === 0) {
-    return null;
+  if (fetchingNewArrivalsProducts) {
+    return (
+      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
+          {Array.from({ length }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -70,23 +52,31 @@ const NewArrivalsProducts = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-        <Suspense
-          fallback={
-            <ProductGrid
-              isLoading={fetchingNewArrivalsProducts}
-              isPaused={newArrivalsProductsPaused}
-              products={newArrivalsProducts}
-              numberOfProducts={numberOfProducts}
-            />
-          }
-        >
-          <ProductGrid
-            isLoading={fetchingNewArrivalsProducts}
-            isPaused={newArrivalsProductsPaused}
-            products={newArrivalsProducts}
-            numberOfProducts={numberOfProducts}
+        {newArrivalsProducts.slice(0, length).map((product) => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            name={product.name}
+            price={
+              product.productColors[0].productPriceDetails[0].newPrice
+                ? product.productColors[0].productPriceDetails[0].newPrice
+                : product.productColors[0].productPriceDetails[0].price
+            }
+            oldPrice={
+              product.productColors[0].productPriceDetails[0].newPrice
+                ? product.productColors[0].productPriceDetails[0].price
+                : undefined
+            }
+            category={product.category}
+            rating={5}
+            discount={product.productColors[0].productPriceDetails[0].discount}
+            imageUrl={product.productUrl}
+            kaigloSale={product.kaigloSale as string}
+            sales={product.sales}
+            sold={product.sold}
+            featured={product.featured}
           />
-        </Suspense>
+        ))}
       </div>
     </div>
   );

@@ -1,37 +1,95 @@
 import HomepageLayout from "@/components/layouts/Homepage/HomepageLayout";
-import React from "react";
-import FeaturedProducts from "@/components/landingPage/FeaturedProducts";
-import PromotionGrid from "@/components/landingPage/Promotion";
-import CategoryGrid from "@/components/landingPage/Categories";
-import SecondaryPromotionGrid from "@/components/landingPage/SecondaryPromotions";
-import FlashSale from "@/components/landingPage/FlashSale";
-import TopSellingProducts from "@/components/landingPage/TopSellingProducts";
-import GroupBuyProducts from "@/components/landingPage/GroupBuyProducts";
-import AppDealsProducts from "@/components/landingPage/AppDealsProducts";
-import TertiaryPromotions from "@/components/landingPage/TertiaryPromotions";
-import NewArrivalProducts from "@/components/landingPage/NewArrivalProducts";
-import SneakersProducts from "@/components/landingPage/SneakersProducts";
-import TopBrands from "@/components/landingPage/TopBrands";
-import RecommendedProducts from "@/components/landingPage/RecommendedProducts";
+import React, { Suspense, useMemo } from "react";
+import dynamic from "next/dynamic";
+
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const components = useMemo(
+    () => ({
+      PromotionGrid: dynamic(
+        () => import("@/components/landingPage/Promotion"),
+      ),
+      CategoryGrid: dynamic(
+        () => import("@/components/landingPage/Categories"),
+      ),
+      SecondaryPromotionGrid: dynamic(
+        () => import("@/components/landingPage/SecondaryPromotions"),
+      ),
+      FlashSale: dynamic(() => import("@/components/landingPage/FlashSale")),
+      FeaturedProducts: dynamic(
+        () => import("@/components/landingPage/FeaturedProducts"),
+      ),
+      TopSellingProducts: dynamic(
+        () => import("@/components/landingPage/TopSellingProducts"),
+      ),
+      GroupBuyProducts: dynamic(
+        () => import("@/components/landingPage/GroupBuyProducts"),
+      ),
+      AppDealsProducts: dynamic(
+        () => import("@/components/landingPage/AppDealsProducts"),
+      ),
+      TertiaryPromotions: dynamic(
+        () => import("@/components/landingPage/TertiaryPromotions"),
+      ),
+      NewArrivalProducts: dynamic(
+        () => import("@/components/landingPage/NewArrivalProducts"),
+      ),
+      SneakersProducts: dynamic(
+        () => import("@/components/landingPage/SneakersProducts"),
+      ),
+      TopBrands: dynamic(() => import("@/components/landingPage/TopBrands")),
+      RecommendedProducts: dynamic(
+        () => import("@/components/landingPage/RecommendedProducts"),
+      ),
+    }),
+    [],
+  );
+
   return (
     <HomepageLayout>
       <div className="space-y-20 mb-20 overflow-x-hidden">
-        <PromotionGrid />
-        <CategoryGrid />
-        <SecondaryPromotionGrid />
-        <FlashSale />
-        <FeaturedProducts />
-        <TopSellingProducts />
-        <TertiaryPromotions />
-        <GroupBuyProducts />
-        <AppDealsProducts />
-        <TopBrands />
-        <NewArrivalProducts />
-        <SneakersProducts />
-        <RecommendedProducts />
+        <Suspense fallback={<div>Loading Sales...</div>}>
+          <components.PromotionGrid />
+          <components.CategoryGrid />
+          <components.SecondaryPromotionGrid />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading Flash Sale...</div>}>
+          <components.FlashSale />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading Featured Products...</div>}>
+          <components.FeaturedProducts />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading Top Selling Products...</div>}>
+          <components.TopSellingProducts />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading Tertiary Promotions...</div>}>
+          <components.TertiaryPromotions />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading Group Buy Products...</div>}>
+          <components.GroupBuyProducts />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading App Deals Products...</div>}>
+          <components.AppDealsProducts />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading Top Brands...</div>}>
+          <components.TopBrands />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading New Arrivals...</div>}>
+          <components.NewArrivalProducts />
+        </Suspense>
+
+        <Suspense fallback={<div>Loading Recommended Products...</div>}>
+          <components.RecommendedProducts />
+        </Suspense>
 
         <div className="hidden lg:flex flex-col gap-y-4">
           <div className="bg-white flex flex-col items-center lg:mx-8 xl:mx-14 mx-4 rounded-lg py-10 px-16 gap-y-4 text-center">

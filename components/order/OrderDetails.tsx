@@ -17,6 +17,9 @@ import { cn } from "@/lib/utils";
 import CancelOrderDialog from "./dialogs/CancelOrder";
 import RequestReturn from "./dialogs/RequestReturn";
 import ReviewOrder from "./dialogs/ReviewOrder";
+import useUpdateOrderStatus from "@/hooks/mutation/order/updateOrderStatus";
+import { orderStatusEnum } from "@/interfaces/dtos/order.dto.interface";
+import Auth from "@/utils/auth";
 
 const formatDate = (date: string) => {
   const utcMoment = moment(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -32,6 +35,8 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
   const [reviewOrder, setReviewOrder] = useState(false);
 
   const { order, fetchingOrderDetails } = useOrderDetails(orderId);
+  const { updateOrderStatusAsync, updatingOrderStatus } =
+    useUpdateOrderStatus(orderId);
 
   if (fetchingOrderDetails)
     return (
@@ -40,11 +45,24 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
       </p>
     );
 
+  const confirmOrder = async () => {
+    await updateOrderStatusAsync({
+      accessToken: Auth.getToken() as string,
+      id: orderId,
+      orderStatus: orderStatusEnum.CONFIRMED,
+      additionalMessage: "",
+      reason: "",
+    });
+  };
+
   return (
     <>
       <div className="lg:space-y-4">
         <div className="lg:relative fixed top-0 bg-white w-full flex lg:space-x-2 items-center lg:justify-start justify-between lg:h-auto h-[60px] px-5 lg:drop-shadow-none drop-shadow lg:px-0">
-          <ChevronLeftIcon className="w-6 h-6" onClick={() => router.back()} />
+          <ChevronLeftIcon
+            className="w-6 h-6 cursor-pointer"
+            onClick={() => router.back()}
+          />
           <h1 className="text-xl font-medium lg:text-start text-center">
             Order details
           </h1>
@@ -67,6 +85,8 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                 </span>
               </p>
             </div>
+
+            <CallForHelp />
           </div>
 
           {/* Order Item */}
@@ -107,40 +127,63 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
               </div>
 
               <div className="space-y-2 h-full lg:col-span-3 col-span-12">
-                <ModifiedButton
-                  type="button"
-                  variant="critical"
-                  value="Cancel Order"
-                  className="rounded-full uppercase bg-transparent text-kaiglo_critical-base border border-kaiglo_critical-base font-medium"
-                  onClick={() => setCancelOrder(true)}
-                />
-                <ModifiedButton
-                  type="button"
-                  variant="outline"
-                  value="Request Return"
-                  className="rounded-full uppercase bg-transparent text-black border border-black font-medium"
-                  onClick={() => setReturnOrder(true)}
-                />
-                <ModifiedButton
-                  type="button"
-                  variant="info"
-                  value="Track Order"
-                  className="bg-transparent uppercase rounded-full font-medium"
-                  onClick={() => {
-                    if (window.innerWidth < 1024) {
-                      setTrackOrder(true);
-                    } else {
-                      router.push(`/app/orders/${order?.id}/track`);
+                {order?.orderStatus === "PENDING" && (
+                  <ModifiedButton
+                    type="button"
+                    variant="critical"
+                    value="Cancel Order"
+                    className="rounded-full uppercase bg-transparent text-kaiglo_critical-base border border-kaiglo_critical-base font-medium"
+                    onClick={() => setCancelOrder(true)}
+                  />
+                )}
+
+                {order?.orderStatus === "FULFILLED" && (
+                  <ModifiedButton
+                    type="button"
+                    variant="outline"
+                    value="Request Return"
+                    className="rounded-full uppercase bg-transparent text-black border border-black font-medium"
+                    onClick={() => setReturnOrder(true)}
+                  />
+                )}
+
+                {order?.orderStatus === "SHIPPED" && (
+                  <ModifiedButton
+                    type="button"
+                    variant="ghost"
+                    value={
+                      updatingOrderStatus ? "Please wait..." : "Confirm Order"
                     }
-                  }}
-                />
-                <ModifiedButton
-                  type="button"
-                  variant="attention"
-                  value="Review and Earn"
-                  className="bg-transparent uppercase rounded-full font-medium"
-                  onClick={() => setReviewOrder(true)}
-                />
+                    className="bg-transparent uppercase rounded-full font-medium border"
+                    onClick={confirmOrder}
+                  />
+                )}
+
+                {order?.orderStatus === "SHIPPED" && (
+                  <ModifiedButton
+                    type="button"
+                    variant="info"
+                    value="Track Order"
+                    className="bg-transparent uppercase rounded-full font-medium border"
+                    onClick={() => {
+                      if (window.innerWidth < 1024) {
+                        setTrackOrder(true);
+                      } else {
+                        router.push(`/app/orders/${order?.id}/track`);
+                      }
+                    }}
+                  />
+                )}
+
+                {order?.orderStatus === "FULFILLED" && (
+                  <ModifiedButton
+                    type="button"
+                    variant="attention"
+                    value="Review and Earn"
+                    className="bg-transparent uppercase rounded-full font-medium border"
+                    onClick={() => setReviewOrder(true)}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -188,7 +231,7 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                   Shipping Fees
                 </span>
                 <span className="col-span-3 font-medium text-end lg:text-start">
-                  ₦{order?.shippingCost.toLocaleString()}
+                  ₦{parseFloat(order?.shippingCost as string).toLocaleString()}
                 </span>
               </p>
               <p className="grid grid-cols-12">
@@ -206,7 +249,8 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                   Tax
                 </span>
                 <span className="col-span-3 font-medium text-end lg:text-start">
-                  ₦{order?.orderItem.shippingCost?.toLocaleString() || 0.0}
+                  {/* ₦{order?.orderItem.shippingCost?.toLocaleString() || 0.0} */}
+                  ₦{0.0}
                 </span>
               </p>
 
@@ -223,6 +267,7 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                     (parseFloat(order?.shippingCost as string) || 0.0) +
                     ((order?.orderItem.shippingCost as number) || 0.0)
                   ).toLocaleString()}
+                  {/* {order?.orderItem.totalAmount.toLocaleString()} */}
                 </span>
               </p>
             </div>

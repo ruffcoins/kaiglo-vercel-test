@@ -1,8 +1,6 @@
-"/api/v1/notification/single-user/v2"
-
 "use client";
 
-import { IWalletHistoryResponse } from "@/interfaces/responses/wallet.interface";
+import { INotificationsResponse } from "@/interfaces/responses/notification.interface";
 import { getRequestParams } from "@/utils/apiCaller";
 import { useQuery } from "@tanstack/react-query";
 
@@ -11,7 +9,7 @@ export const useNotifications = () => {
     useQuery(
       ["notifications", 0],
       () =>
-        getRequestParams<{ page: number }, IWalletHistoryResponse>({
+        getRequestParams<{ page: number }, INotificationsResponse>({
           url: "/notification/single-user/v2",
           params: { page: 0 },
         }),
@@ -22,13 +20,13 @@ export const useNotifications = () => {
     );
 
   return {
-    walletHistory: data?.content,
-    walletHistoryPagination: data?.pageable,
-    fetchingWalletHistory: isFetching,
-    refetchWalletHistory: refetch,
-    walletHistorySuccess: isSuccess,
-    walletHistoryPaused: isPaused,
-    walletHistoryError: isError,
-    removeWalletHistory: remove,
+    notifications: data?.response.content,
+    notificationsPagination: data?.response.pageable,
+    fetchingNotifications: isFetching,
+    refetchNotifications: refetch,
+    notificationsSuccess: isSuccess,
+    notificationsPaused: isPaused,
+    notificationsError: isError,
+    removeNotifications: remove,
   };
 };

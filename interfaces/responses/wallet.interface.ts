@@ -1,4 +1,4 @@
-import { IWalletHistory } from "../wallet.interface";
+import { IWalletHistory, UserWallet } from "../wallet.interface";
 import { Pageable, Sort } from "./product.interface";
 
 export interface IWalletHistoryResponse {
@@ -13,4 +13,9 @@ export interface IWalletHistoryResponse {
   first: boolean;
   numberOfElements: number;
   empty: boolean;
+}
+
+export interface IUserWalletResponse {
+  response: UserWallet;
+  message: string;
 }

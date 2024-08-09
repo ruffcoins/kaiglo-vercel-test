@@ -57,6 +57,21 @@ export interface IRecommendedProductResponse {
   empty: boolean;
 }
 
+/********** RELATED PRODUCTS **********/
+export interface IRelatedProductResponse {
+  content: IProduct[];
+  pageable: Pageable;
+  last: boolean;
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  sort: Sort;
+  first: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}
+
 /********** APP DEALS PRODUCTS **********/
 export interface IAppDealsProductResponse {
   content: IProduct[];
@@ -97,4 +112,10 @@ export interface Sort {
   sorted: boolean;
   unsorted: boolean;
   empty: boolean;
+}
+
+/********** PRODUCT DESCRIPTION **********/
+export interface IProductDescriptionResponse {
+  response: string;
+  message: string;
 }

@@ -17,7 +17,7 @@ interface Address {
   state: string;
 }
 
-interface BoughtItem {
+export interface BoughtItem {
   category: string;
   color: string;
   price: number;

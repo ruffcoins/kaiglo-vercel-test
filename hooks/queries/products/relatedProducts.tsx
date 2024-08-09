@@ -1,9 +1,9 @@
 import { IProduct } from "@/interfaces/product.interface";
-import { IRecommendedProductResponse } from "@/interfaces/responses/product.interface";
-import { getRequest } from "@/utils/apiCaller";
+import { IRelatedProductResponse } from "@/interfaces/responses/product.interface";
+import { postRequest } from "@/utils/apiCaller";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-export const useRecommendedProducts = () => {
+export const useRelatedProducts = (category: string, productId: string) => {
   const {
     data,
     fetchNextPage,
@@ -13,34 +13,39 @@ export const useRecommendedProducts = () => {
     error,
     refetch,
     remove,
-  } = useInfiniteQuery<IRecommendedProductResponse, Error>(
-    ["recommended-products"],
+  } = useInfiniteQuery<IRelatedProductResponse, Error>(
+    ["related-products"],
     ({ pageParam = 0 }) =>
-      getRequest<IRecommendedProductResponse>({
-        url: `product/home-recommendation/${pageParam}`,
+      postRequest<
+        { category: string; productId: string },
+        IRelatedProductResponse
+      >({
+        url: `product/recommendation/${pageParam}`,
+        payload: { category, productId },
       }),
     {
       getNextPageParam: (lastPage) => {
         if (lastPage.last) return undefined; // No more pages
         return lastPage.number + 1; // Next page number
       },
+      enabled: !!category && !!productId,
       staleTime: 1000 * 60 * 30,
       cacheTime: 1000 * 60 * 60,
     },
   );
 
-  const recommendedProducts: IProduct[] =
+  const relatedProducts: IProduct[] =
     data?.pages.flatMap((page) => page.content) ?? [];
 
   return {
-    recommendedProducts,
+    relatedProducts,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     status,
     error,
-    refetchRecommendedProducts: refetch,
-    removeRecommendedProducts: remove,
+    refetchRelatedProducts: refetch,
+    removeRelatedProducts: remove,
     totalProducts: data?.pages[data.pages.length - 1]?.totalElements,
     currentPage: data?.pages[data.pages.length - 1]?.number as number,
     totalPages: data?.pages[data.pages.length - 1]?.totalPages,

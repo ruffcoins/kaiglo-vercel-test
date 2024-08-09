@@ -11,6 +11,7 @@ import TopupInfo from "@/components/rewards/TopupInfo";
 import Topup from "@/components/rewards/Topup";
 import TopupInfoConfirmation from "@/components/rewards/TopupInfoConfirmation";
 import useTopUpDialogs from "@/hooks/useTopUpDialogs";
+import { useUserWallet } from "@/hooks/queries/wallet/getUserWallet";
 
 const formatDate = (date: string) => {
   const utcMoment = moment(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -20,6 +21,7 @@ const formatDate = (date: string) => {
 
 const Rewards = () => {
   const { walletHistory, fetchingWalletHistory } = useWalletHistory();
+  const { wallet, fetchingWallet } = useUserWallet();
 
   const {
     showFirstConfirmation,
@@ -50,14 +52,26 @@ const Rewards = () => {
             <div className="flex flex-col justify-between absolute top-0 right-0 bottom-0 left-0 p-5">
               <div className="flex justify-between items-center">
                 <div className="text-white">
-                  <p className="font-bold text-2xl">₦0.0</p>
+                  {fetchingWallet || !wallet ? (
+                    <div className="animate-pulse bg-gray-200 w-40 h-8 mb-2"></div>
+                  ) : (
+                    <p className="font-bold text-2xl">
+                      ₦{wallet?.amount.toLocaleString()}
+                    </p>
+                  )}
+
                   <p className="text-xs">Your Balance</p>
                 </div>
 
                 <Button
                   variant="outline"
-                  className="bg-transparent rounded-full border-[1px] border-white text-white font-medium px-4 py-2"
-                  onClick={handleTopUpClick}
+                  className="bg-transparent rounded-full border-[1px] border-white text-white font-medium px-4 py-2 disabled:cursor-not-allowed"
+                  disabled={fetchingWallet || fetchingWalletHistory}
+                  onClick={() => {
+                    if (!fetchingWallet && !fetchingWalletHistory) {
+                      handleTopUpClick();
+                    }
+                  }}
                 >
                   Top up
                 </Button>
@@ -71,34 +85,36 @@ const Rewards = () => {
             {fetchingWalletHistory ? (
               <div className="animate-pulse bg-gray-200 w-full h-16"></div>
             ) : (
-              walletHistory?.map((history) => (
-                <div
-                  key={history.id}
-                  className="border flex justify-between items-center p-2 rounded-lg mb-3"
-                >
-                  <div className="gap-x-2 flex justify-start items-start">
-                    <Image
-                      src={history.tranType === "Credit" ? Credit : Debit}
-                      alt={`${history.tranType}-wallet-${history.transactionId}`}
-                      width={100}
-                      height={100}
-                      className="w-6 h-6"
-                    />
-                    <div className="space-y-1">
-                      <p className="font-medium text-sm">
-                        {history.description}
-                      </p>
-                      <p className="text-xs uppercase text-kaiglo_grey-placeholder">
-                        {formatDate(history.createDate)}
-                      </p>
+              <div className="h-[calc(100vh-32rem)] overflow-y-auto">
+                {walletHistory?.map((history) => (
+                  <div
+                    key={history.id}
+                    className="border flex justify-between items-center p-2 rounded-lg mb-3"
+                  >
+                    <div className="gap-x-2 flex justify-start items-start">
+                      <Image
+                        src={history.tranType === "Credit" ? Credit : Debit}
+                        alt={`${history.tranType}-wallet-${history.transactionId}`}
+                        width={100}
+                        height={100}
+                        className="w-6 h-6"
+                      />
+                      <div className="space-y-1">
+                        <p className="font-medium text-sm">
+                          {history.description}
+                        </p>
+                        <p className="text-xs uppercase text-kaiglo_grey-placeholder">
+                          {formatDate(history.createDate)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  <p className="font-medium text-sm text-right">
-                    ₦{parseFloat(history.amount).toLocaleString()}
-                  </p>
-                </div>
-              ))
+                    <p className="font-medium text-sm text-right">
+                      ₦{parseFloat(history.amount).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>

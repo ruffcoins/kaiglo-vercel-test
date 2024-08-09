@@ -32,4 +32,15 @@ export interface ControlledModifiedSelectProps<T extends FieldValues> {
   error: any;
   options: string[];
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  required: boolean;
+}
+
+export interface ControlledModifiedTextAreaProps<T extends FieldValues> {
+  name: Path<T>;
+  control: Control<T>;
+  rules: any;
+  placeholder: string;
+  error: any;
+  rows: number;
+  required: boolean;
 }

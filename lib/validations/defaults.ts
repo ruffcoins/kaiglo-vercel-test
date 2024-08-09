@@ -50,3 +50,11 @@ export const updateAddressDefaultValues = {
   state: "",
   id: "",
 };
+
+export const updateOrderStatusDefaultValues = {
+  accessToken: "",
+  additionalMessage: "",
+  id: "",
+  orderStatus: "PENDING",
+  reason: "",
+};

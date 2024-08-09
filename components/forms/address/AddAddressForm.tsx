@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import useAddAddress from "@/hooks/mutation/address/addAddress";
 import ModifiedButton from "@/components/shared/ModifiedButton";
 import { AddAddressFormProps } from "@/interfaces/elements.interface";
+import { ILocalGovt } from "@/interfaces/address.interface";
 
 const AddAddressForm = ({ stateAndCities, setOpen }: AddAddressFormProps) => {
   const {
@@ -21,12 +22,12 @@ const AddAddressForm = ({ stateAndCities, setOpen }: AddAddressFormProps) => {
     resolver: addAddressResolver,
   });
 
-  const [filteredCities, setFilteredCities] = useState<string[]>([]);
+  const [filteredCities, setFilteredCities] = useState<ILocalGovt[]>([]);
 
-  const { addAddress, addingAddress } = useAddAddress();
+  const { addAddressAsync, addingAddress } = useAddAddress();
 
-  const onSubmit = (values: AddAddressFormDTO) => {
-    addAddress(values);
+  const onSubmit = async (values: AddAddressFormDTO) => {
+    await addAddressAsync(values);
     reset();
     setOpen(false);
   };
@@ -38,7 +39,7 @@ const AddAddressForm = ({ stateAndCities, setOpen }: AddAddressFormProps) => {
       const selectedStateData = stateAndCities.find(
         (stateItem) => stateItem.name === state,
       );
-      setFilteredCities(selectedStateData ? selectedStateData.cities : []);
+      setFilteredCities(selectedStateData ? selectedStateData.localGovts : []);
     } else {
       setFilteredCities([]);
     }
@@ -89,16 +90,18 @@ const AddAddressForm = ({ stateAndCities, setOpen }: AddAddressFormProps) => {
             error={errors.state}
             options={stateAndCities.map((state) => state.name)}
             data-testid="state"
+            required={true}
           />
 
           <ControlledModifiedSelect
-            options={filteredCities}
+            options={filteredCities.map((city) => city.name as string)}
             name="city"
             control={control}
             rules={{ required: true }}
             placeholder="Select City"
             error={errors.city}
             data-testid="city"
+            required={true}
           />
 
           <div className="relative">

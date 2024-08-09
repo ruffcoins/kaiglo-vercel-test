@@ -573,7 +573,7 @@ const ProductSelectionDialog = ({
                 onClick={() => {
                   setCheckoutItems([buyNowProduct as ICacheCart]);
                   if (isLoggedIn) {
-                    router.push("/checkout/order-confirmation");
+                    router.push("/checkout/order-confirmation?buyNow=true");
                   } else {
                     setOpenAuthModal(true);
                   }

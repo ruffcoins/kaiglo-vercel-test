@@ -20,7 +20,7 @@ const OrderSummaryCard: React.FC<IOrderSummary> = (order) => {
           <p className=" text-kaiglo_grey-placeholder">
             Order: {order.orderNumber}
           </p>
-          <p className="font-bold">{order.price}</p>
+          <p className="font-bold">₦{order.price.toLocaleString()}</p>
           <ModifiedBadge status={order?.status as OrderStatus} />
         </div>
       </div>

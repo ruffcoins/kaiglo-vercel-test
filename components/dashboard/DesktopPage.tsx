@@ -19,11 +19,13 @@ import Topup from "../rewards/Topup";
 import TopupInfo from "../rewards/TopupInfo";
 import TopupInfoConfirmation from "../rewards/TopupInfoConfirmation";
 import { useCartContext } from "@/contexts/CartContext";
+import { useUserWallet } from "@/hooks/queries/wallet/getUserWallet";
 
 const DesktopPage = () => {
   const { user } = useFetchUserProfile();
   const { isLoggedIn } = useAuth();
   const { cart } = useCartContext();
+  const { wallet, fetchingWallet } = useUserWallet();
   const {
     showFirstConfirmation,
     showTopUpDialog,
@@ -144,15 +146,26 @@ const DesktopPage = () => {
             />
             <div className="flex flex-col justify-between absolute top-0 right-0 bottom-0 left-0 p-5">
               <div className="text-white">
-                <p className="font-bold text-2xl">₦0.0</p>
+                {fetchingWallet || !wallet ? (
+                  <div className="animate-pulse bg-gray-200 w-40 h-8 mb-2"></div>
+                ) : (
+                  <p className="font-bold text-2xl">
+                    ₦{wallet?.amount.toLocaleString()}
+                  </p>
+                )}
                 <p className="text-xs">Your Balance</p>
               </div>
 
               <div className="flex w-full space-x-4">
                 <Button
                   variant="outline"
-                  className="bg-transparent rounded-full border-[1px] border-white text-white font-medium px-4 xl:px-8 py-2"
-                  onClick={handleTopUpClick}
+                  className="bg-transparent rounded-full border-[1px] border-white text-white font-medium px-4 xl:px-8 py-2 disabled:cursor-not-allowed"
+                  disabled={fetchingWallet}
+                  onClick={() => {
+                    if (!fetchingWallet) {
+                      handleTopUpClick();
+                    }
+                  }}
                 >
                   Top up
                 </Button>

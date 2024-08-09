@@ -23,15 +23,17 @@ const Wishlist = () => {
         <div className="w-6 h-6"></div> {/* Placeholder to center the h1 */}
       </div>
 
-      {user?.wishListItems.length > 0 ? (
-        <div className="grid md:grid-cols-4 grid-cols-2 gap-4 pt-20 lg:pt-0 px-4 lg:px-0">
-          {user?.wishListItems.map((product, index) => (
-            <WishlistProductCard key={index} product={product} />
-          ))}
-        </div>
-      ) : (
-        <WishlistEmptyState />
-      )}
+      <div className="h-[calc(100vh-18rem)] overflow-y-auto">
+        {user?.wishListItems.length > 0 ? (
+          <div className="grid md:grid-cols-4 grid-cols-2 gap-4 pt-20 lg:pt-0 px-4 lg:px-0">
+            {user?.wishListItems.map((product, index) => (
+              <WishlistProductCard key={index} product={product} />
+            ))}
+          </div>
+        ) : (
+          <WishlistEmptyState />
+        )}
+      </div>
     </div>
   );
 };

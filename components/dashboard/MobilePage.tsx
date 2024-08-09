@@ -20,7 +20,7 @@ import Rewards from "@/public/images/rewards.svg";
 const MobilePage = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { isLoggedIn } = useAuth();
+  // const { isLoggedIn } = useAuth();
   const { user } = useFetchUserProfile();
   const [openLogoutDialog, setOpenLogoutDialog] = useState<boolean>(false);
 

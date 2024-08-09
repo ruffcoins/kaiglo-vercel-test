@@ -5,9 +5,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { SetStateAction } from "react";
-import { stateAndCities } from "@/constants/stateAndCities";
 import UpdateAddressForm from "@/components/forms/address/UpdateAddressForm";
 import { IAddress } from "@/interfaces/address.interface";
+import { useGetAllStatesAndCities } from "@/hooks/queries/address/getStatesAndCities";
 
 const EditAddressDialog = ({
   open,
@@ -18,7 +18,7 @@ const EditAddressDialog = ({
   setOpen: React.Dispatch<SetStateAction<boolean>>;
   initialValues: IAddress;
 }) => {
-  const statesAndCities = stateAndCities;
+  const { statesAndCities } = useGetAllStatesAndCities();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -27,7 +27,7 @@ const EditAddressDialog = ({
           <DialogTitle>Update Address</DialogTitle>
         </DialogHeader>
         <UpdateAddressForm
-          stateAndCities={statesAndCities}
+          stateAndCities={statesAndCities ?? []}
           setOpen={setOpen}
           initialValues={initialValues}
         />

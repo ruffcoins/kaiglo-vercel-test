@@ -24,7 +24,7 @@ export interface IOrder {
   issue: null | any;
 }
 
-interface OrderItem {
+export interface OrderItem {
   url: string;
   productId: string;
   productName: string;

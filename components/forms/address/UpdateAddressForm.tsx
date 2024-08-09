@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import ModifiedButton from "@/components/shared/ModifiedButton";
 import { UpdateAddressFormProps } from "@/interfaces/elements.interface";
 import useUpdateAddress from "@/hooks/mutation/address/updateAddress";
-import { IAddress } from "@/interfaces/address.interface";
+import { IAddress, ILocalGovt } from "@/interfaces/address.interface";
 
 type AddressKeys = keyof IAddress;
 
@@ -38,12 +38,12 @@ const UpdateAddressForm = ({
     }
   }, [initialValues, setValue]);
 
-  const [filteredCities, setFilteredCities] = useState<string[]>([]);
+  const [filteredCities, setFilteredCities] = useState<ILocalGovt[]>([]);
 
-  const { updateAddress, updatingAddress } = useUpdateAddress();
+  const { updateAddressAsync, updatingAddress } = useUpdateAddress();
 
-  const onSubmit = (values: UpdateAddressFormDTO) => {
-    updateAddress(values);
+  const onSubmit = async (values: UpdateAddressFormDTO) => {
+    await updateAddressAsync(values);
     reset();
     setOpen(false);
   };
@@ -55,7 +55,7 @@ const UpdateAddressForm = ({
       const selectedStateData = stateAndCities.find(
         (stateItem) => stateItem.name === state,
       );
-      setFilteredCities(selectedStateData ? selectedStateData.cities : []);
+      setFilteredCities(selectedStateData ? selectedStateData.localGovts : []);
     } else {
       setFilteredCities([]);
     }
@@ -106,16 +106,18 @@ const UpdateAddressForm = ({
             error={errors.state}
             options={stateAndCities.map((state) => state.name)}
             data-testid="state"
+            required={true}
           />
 
           <ControlledModifiedSelect
-            options={filteredCities}
+            options={filteredCities.map((city) => city.name as string)}
             name="city"
             control={control}
             rules={{ required: true }}
             placeholder="Select City"
             error={errors.city}
             data-testid="city"
+            required={true}
           />
 
           <div className="relative">

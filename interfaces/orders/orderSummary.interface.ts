@@ -3,7 +3,6 @@ export interface IOrderSummary {
   image: string;
   title: string;
   orderNumber: string;
-  price: string;
+  price: number;
   status: string;
-  link: string;
 }

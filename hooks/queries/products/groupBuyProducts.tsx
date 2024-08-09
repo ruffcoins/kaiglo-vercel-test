@@ -1,6 +1,7 @@
 import { getRequest } from "@/utils/apiCaller";
 import { useQuery } from "@tanstack/react-query";
 import { IGroupBuyProductResponse } from "@/interfaces/responses/product.interface";
+import { IProduct } from "@/interfaces/product.interface";
 
 export const useGroupBuyProducts = () => {
   const { data, isFetching, refetch, isSuccess, isError, remove, isPaused } =
@@ -16,7 +17,7 @@ export const useGroupBuyProducts = () => {
     );
 
   return {
-    groupBuyProducts: data?.content,
+    groupBuyProducts: data?.content as IProduct[],
     groupBuyProductsPagination: data?.pageable,
     fetchingGroupBuyProducts: isFetching,
     refetchGroupBuyProducts: refetch,

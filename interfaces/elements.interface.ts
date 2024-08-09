@@ -2,7 +2,7 @@
 // import { ButtonVariants } from "@/types/element.type";
 import { OrderStatus } from "@/enums/orderStatus.enum";
 import { Dispatch, ReactNode, SetStateAction } from "react";
-import { IAddress } from "./address.interface";
+import { IAddress, IState } from "./address.interface";
 
 /********** MODIFIED BADGE PROPS ***********/
 export interface ModifiedBadgeProps {
@@ -60,6 +60,17 @@ export interface ModifiedInputProps {
   isRequired?: boolean;
 }
 
+/*********** MODIFIED TEXT AREA PROPS *********/
+export interface ModifiedTextAreaProps {
+  id: string;
+  placeholder?: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  classNames?: string;
+  required?: boolean;
+  rows: number;
+}
+
 /*********** AUTH DIALOG PROPS ***********/
 export interface AuthDialogProps {
   openAuthModal: boolean;
@@ -108,13 +119,13 @@ export interface UserDropdownMenuProps {
 
 /*********** ADD ADDRESS FORM PROPS ***********/
 export interface AddAddressFormProps {
-  stateAndCities: any[];
+  stateAndCities: IState[];
   setOpen: React.Dispatch<SetStateAction<boolean>>;
 }
 
 /*********** UPDATE ADDRESS FORM PROPS ***********/
 export interface UpdateAddressFormProps {
-  stateAndCities: any[];
+  stateAndCities: IState[];
   setOpen: React.Dispatch<SetStateAction<boolean>>;
   initialValues: IAddress;
 }

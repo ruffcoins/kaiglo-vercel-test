@@ -1,3 +1,4 @@
+import { orderStatusEnum } from "@/interfaces/dtos/order.dto.interface";
 import * as yup from "yup";
 
 /*********** SIGN UP FORM SCHEMA ***********/
@@ -54,4 +55,13 @@ export const updateAddressSchema = yup.object({
   defaultAddress: yup.boolean().required("Default Address is required"),
   phoneNumber: yup.string().required("Phone Number is required"),
   id: yup.string().required("Address ID is required"),
+});
+
+/*********** UPDATE ORDER STATUS FORM SCHEMA ***********/
+export const updateOrderStatusSchema = yup.object({
+  accessToken: yup.string().required("Access token is required"),
+  additionalMessage: yup.string().required("Additional message is required"),
+  id: yup.string().required("Order ID is required"),
+  orderStatus: yup.string().required("Order status is required"),
+  reason: yup.string().required("Reason is required"),
 });

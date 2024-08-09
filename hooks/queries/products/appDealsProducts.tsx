@@ -2,6 +2,7 @@ import { getRequest } from "@/utils/apiCaller";
 import { useQuery } from "@tanstack/react-query";
 
 import { IAppDealsProductResponse } from "@/interfaces/responses/product.interface";
+import { IProduct } from "@/interfaces/product.interface";
 
 export const useAppDealsProducts = () => {
   const { data, isFetching, refetch, isSuccess, isError, remove, isPaused } =
@@ -17,7 +18,7 @@ export const useAppDealsProducts = () => {
     );
 
   return {
-    appDealsProducts: data?.content,
+    appDealsProducts: data?.content as IProduct[],
     appDealsProductsPagination: data?.pageable,
     fetchingAppDealsProducts: isFetching,
     refetchAppDealsProducts: refetch,

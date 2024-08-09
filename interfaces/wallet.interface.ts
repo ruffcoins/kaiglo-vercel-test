@@ -15,3 +15,12 @@ export interface IWalletHistory {
   transactionId: string;
   user: UserResponse;
 }
+
+export interface UserWallet {
+  id: string;
+  amount: number;
+  active: boolean;
+  user: UserResponse;
+  createdDate: string;
+  updatedDate: string;
+}

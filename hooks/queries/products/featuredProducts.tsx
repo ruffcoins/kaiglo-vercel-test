@@ -1,6 +1,7 @@
 import { getRequestParams } from "@/utils/apiCaller";
 import { useQuery } from "@tanstack/react-query";
 import { IFeaturedProductResponse } from "@/interfaces/responses/product.interface";
+import { IProduct } from "@/interfaces/product.interface";
 
 export const useFeaturedProducts = () => {
   const { data, isFetching, refetch, isSuccess, isError, remove, isPaused } =
@@ -17,7 +18,7 @@ export const useFeaturedProducts = () => {
     );
 
   return {
-    featuredProducts: data?.content,
+    featuredProducts: data?.content as IProduct[],
     featuredProductsPagination: data?.pageable,
     fetchingFeaturedProducts: isFetching,
     refetchFeaturedProducts: refetch,

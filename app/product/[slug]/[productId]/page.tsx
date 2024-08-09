@@ -12,7 +12,6 @@ import ProductDescription from "@/components/product/ProductDescription";
 import ProductReviews from "@/components/product/ProductReview";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import InnerPageLayout from "@/components/layouts/InnerPageLayout";
-import Loader from "@/components/shared/Loader";
 import ProductDetailsIntroductionSkeletonLoader from "@/components/product/skeletons/ProductDetailsIntroductionSkeletonLoader";
 
 export default async function Product({
@@ -101,7 +100,7 @@ export default async function Product({
           </div>
         </div>
 
-        <ProductDescription />
+        <ProductDescription productId={productId} />
 
         <ProductReviews />
 
@@ -115,9 +114,7 @@ export default async function Product({
           </p>
         </div>
 
-        <div className="lg:mx-8 xl:mx-14 mx-4 rounded-2xl p-6 bg-white">
-          <RelatedProducts />
-        </div>
+        <RelatedProducts productId={productId} />
       </div>
     </InnerPageLayout>
   );

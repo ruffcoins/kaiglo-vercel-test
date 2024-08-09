@@ -116,7 +116,7 @@ const ProductCard = ({
                 "text-sm font-normal capitalize text-kaiglo_grey-placeholder",
               )}
             >
-              {truncate(category.toLocaleLowerCase(), 16)}
+              {truncate(category?.toLocaleLowerCase(), 16)}
             </p>
             <div className="flex lg:flex-row flex-col items-start lg:items-center lg:space-x-4 space-y-1 lg:space-y-0">
               <Rating rating={rating} />

@@ -3,54 +3,39 @@
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import ProductCard from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/button";
-import { Suspense, useEffect, useState } from "react";
 import ErrorComponent from "@/components//shared/ErrorComponent";
 import { useTopSellingProducts } from "@/hooks/queries/products/topSellingProducts";
 import ProductCardSkeleton from "@/components/shared/ProductCardSkeleton";
-import ProductGrid from "../product/ProductGrid";
+import useProductRowLength from "@/hooks/useProductRowLength";
 
 const TopSellingProducts = () => {
+  const { length } = useProductRowLength();
   const {
     topSellingProducts,
     fetchingTopSellingProducts,
     topSellingProductsError,
-    topSellingProductsPaused,
     refetchTopSellingProducts,
   } = useTopSellingProducts();
-
-  const [screenWidth, setScreenWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 0,
-  );
-  const [numberOfProducts, setNumberOfProducts] = useState(0);
-
-  const handleResize = () => setScreenWidth(window.innerWidth);
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    const determineNumberOfProducts = () => {
-      if (screenWidth < 640) return 2;
-      if (screenWidth >= 768 && screenWidth < 1280) return 4;
-      if (screenWidth >= 1280 && screenWidth <= 1440) return 5;
-      return 6;
-    };
-    setNumberOfProducts(determineNumberOfProducts());
-  }, [screenWidth]);
 
   if (topSellingProductsError) {
     return (
       <ErrorComponent
-        message="Failed to load group buy products."
+        message="Failed to load top selling products."
         action={refetchTopSellingProducts}
       />
     );
   }
 
-  if (!topSellingProducts || topSellingProducts.length === 0) {
-    return null;
+  if (fetchingTopSellingProducts) {
+    return (
+      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
+          {Array.from({ length }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -67,23 +52,31 @@ const TopSellingProducts = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-        <Suspense
-          fallback={
-            <ProductGrid
-              isLoading={fetchingTopSellingProducts}
-              isPaused={topSellingProductsPaused}
-              products={topSellingProducts}
-              numberOfProducts={numberOfProducts}
-            />
-          }
-        >
-          <ProductGrid
-            isLoading={fetchingTopSellingProducts}
-            isPaused={topSellingProductsPaused}
-            products={topSellingProducts}
-            numberOfProducts={numberOfProducts}
+        {topSellingProducts.slice(0, length).map((product) => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            name={product.name}
+            price={
+              product.productColors[0].productPriceDetails[0].newPrice
+                ? product.productColors[0].productPriceDetails[0].newPrice
+                : product.productColors[0].productPriceDetails[0].price
+            }
+            oldPrice={
+              product.productColors[0].productPriceDetails[0].newPrice
+                ? product.productColors[0].productPriceDetails[0].price
+                : undefined
+            }
+            category={product.category}
+            rating={5}
+            discount={product.productColors[0].productPriceDetails[0].discount}
+            imageUrl={product.productUrl}
+            kaigloSale={product.kaigloSale as string}
+            sales={product.sales}
+            sold={product.sold}
+            featured={product.featured}
           />
-        </Suspense>
+        ))}
       </div>
     </div>
   );

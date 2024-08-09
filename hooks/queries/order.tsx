@@ -1,6 +1,7 @@
 import {
   IOrderTimeLineResponse,
   OrderResponse,
+  UserOrderResponse,
 } from "@/interfaces/responses/order.interface";
 import { getRequest, getRequestParams } from "@/utils/apiCaller";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +15,7 @@ export const useOrderDetails = (orderId: string) => {
           url: `order/${orderId}`,
         }),
       {
+        enabled: !!orderId,
         staleTime: 1000 * 60 * 60,
       },
     );
@@ -35,11 +37,13 @@ export const useOrderTimeline = (orderNumber: string) => {
       ["order-timeline", orderNumber],
       () =>
         getRequestParams<{ orderNumber: string }, IOrderTimeLineResponse>({
-          url: `order-timelines`,
+          url: `/order-timelines`,
           params: { orderNumber },
         }),
       {
-        staleTime: 1000 * 60 * 60,
+        enabled: !!orderNumber,
+        staleTime: 1000 * 60 * 30,
+        cacheTime: 1000 * 60 * 60,
       },
     );
 
@@ -51,5 +55,27 @@ export const useOrderTimeline = (orderNumber: string) => {
     orderTimelinePaused: isPaused,
     orderTimelineError: isError,
     removeOrderTimeline: remove,
+  };
+};
+
+export const userOrders = () => {
+  const { data, isFetching, refetch, isSuccess, isError, remove, isPaused } =
+    useQuery(
+      ["user-orders"],
+      () => getRequest<UserOrderResponse>({ url: "/order/user-order" }),
+      {
+        staleTime: 1000 * 60 * 30,
+        cacheTime: 1000 * 60 * 60,
+      },
+    );
+
+  return {
+    orders: data?.response,
+    fetchingOrders: isFetching,
+    refetchOrders: refetch,
+    ordersSuccess: isSuccess,
+    ordersPaused: isPaused,
+    ordersError: isError,
+    removeOrders: remove,
   };
 };
