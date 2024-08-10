@@ -40,11 +40,11 @@ const DesktopPage = () => {
 
   const [isProcessing, setIsProcessing] = useState(false);
 
-  useEffect(() => {
-    if (!isLoggedIn && typeof window !== "undefined") {
-      window.location.replace("/");
-    }
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (!isLoggedIn && typeof window !== "undefined") {
+  //     window.location.replace("/");
+  //   }
+  // }, [isLoggedIn]);
 
   return (
     <>
