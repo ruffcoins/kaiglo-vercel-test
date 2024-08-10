@@ -12,6 +12,10 @@ import Topup from "@/components/rewards/Topup";
 import TopupInfoConfirmation from "@/components/rewards/TopupInfoConfirmation";
 import useTopUpDialogs from "@/hooks/useTopUpDialogs";
 import { useUserWallet } from "@/hooks/queries/wallet/getUserWallet";
+import { useInView } from "react-intersection-observer";
+import { useEffect, useState } from "react";
+import Loader from "@/components/shared/Loader";
+import { PaymentProcessingDialog } from "@/components/shared/PaymentProcessingDialog";
 
 const formatDate = (date: string) => {
   const utcMoment = moment(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -20,8 +24,16 @@ const formatDate = (date: string) => {
 };
 
 const Rewards = () => {
-  const { walletHistory, fetchingWalletHistory } = useWalletHistory();
+  const {
+    walletHistory,
+    status,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useWalletHistory();
   const { wallet, fetchingWallet } = useUserWallet();
+  const { ref, inView } = useInView();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const {
     showFirstConfirmation,
@@ -33,6 +45,12 @@ const Rewards = () => {
     handleTopUpSubmit,
     handleSecondConfirmationClose,
   } = useTopUpDialogs();
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage, hasNextPage]);
 
   return (
     <>
@@ -66,9 +84,9 @@ const Rewards = () => {
                 <Button
                   variant="outline"
                   className="bg-transparent rounded-full border-[1px] border-white text-white font-medium px-4 py-2 disabled:cursor-not-allowed"
-                  disabled={fetchingWallet || fetchingWalletHistory}
+                  disabled={fetchingWallet || status === "loading"}
                   onClick={() => {
-                    if (!fetchingWallet && !fetchingWalletHistory) {
+                    if (!fetchingWallet && status !== "loading") {
                       handleTopUpClick();
                     }
                   }}
@@ -82,7 +100,7 @@ const Rewards = () => {
           <div className="space-y-3">
             <p className="font-medium text-sm">Rewards</p>
 
-            {fetchingWalletHistory ? (
+            {status === "loading" ? (
               <div className="animate-pulse bg-gray-200 w-full h-16"></div>
             ) : (
               <div className="h-[calc(100vh-32rem)] overflow-y-auto">
@@ -114,6 +132,14 @@ const Rewards = () => {
                     </p>
                   </div>
                 ))}
+                {isFetchingNextPage && (
+                  <div className="flex justify-center items-center h-40">
+                    <Loader />
+                  </div>
+                )}
+                <div ref={ref}>
+                  {/* This empty div acts as a sentinel for the IntersectionObserver */}
+                </div>
               </div>
             )}
           </div>
@@ -129,12 +155,20 @@ const Rewards = () => {
         open={showTopUpDialog}
         setOpen={() => setShowTopUpDialog(false)}
         handleSubmit={handleTopUpSubmit}
+        setIsProcessing={setIsProcessing}
       />
 
       <TopupInfoConfirmation
         open={showSecondConfirmation}
         setOpen={handleSecondConfirmationClose}
       />
+
+      {isProcessing && (
+        <PaymentProcessingDialog
+          isProcessing={isProcessing}
+          setIsProcessing={setIsProcessing}
+        />
+      )}
     </>
   );
 };

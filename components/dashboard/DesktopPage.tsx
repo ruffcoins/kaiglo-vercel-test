@@ -13,13 +13,14 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useFetchUserProfile } from "@/hooks/queries/userProfile";
 import useAuth from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useTopUpDialogs from "@/hooks/useTopUpDialogs";
 import Topup from "../rewards/Topup";
 import TopupInfo from "../rewards/TopupInfo";
 import TopupInfoConfirmation from "../rewards/TopupInfoConfirmation";
 import { useCartContext } from "@/contexts/CartContext";
 import { useUserWallet } from "@/hooks/queries/wallet/getUserWallet";
+import { PaymentProcessingDialog } from "../shared/PaymentProcessingDialog";
 
 const DesktopPage = () => {
   const { user } = useFetchUserProfile();
@@ -37,11 +38,13 @@ const DesktopPage = () => {
     handleSecondConfirmationClose,
   } = useTopUpDialogs();
 
-  // useEffect(() => {
-  //   if (!isLoggedIn && typeof window !== "undefined") {
-  //     window.location.replace("/");
-  //   }
-  // }, [isLoggedIn]);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (!isLoggedIn && typeof window !== "undefined") {
+      window.location.replace("/");
+    }
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -222,12 +225,20 @@ const DesktopPage = () => {
         open={showTopUpDialog}
         setOpen={() => setShowTopUpDialog(false)}
         handleSubmit={handleTopUpSubmit}
+        setIsProcessing={setIsProcessing}
       />
 
       <TopupInfoConfirmation
         open={showSecondConfirmation}
         setOpen={handleSecondConfirmationClose}
       />
+
+      {isProcessing && (
+        <PaymentProcessingDialog
+          isProcessing={isProcessing}
+          setIsProcessing={setIsProcessing}
+        />
+      )}
     </>
   );
 };

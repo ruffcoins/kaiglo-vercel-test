@@ -1,5 +1,6 @@
 import { IWalletHistory, UserWallet } from "../wallet.interface";
 import { Pageable, Sort } from "./product.interface";
+import { UserResponse } from "./user.interface";
 
 export interface IWalletHistoryResponse {
   content: IWalletHistory[];
@@ -18,4 +19,18 @@ export interface IWalletHistoryResponse {
 export interface IUserWalletResponse {
   response: UserWallet;
   message: string;
+}
+
+export interface IFundWalletResponse {
+  response: FundWallet;
+  message: string;
+}
+
+interface FundWallet {
+  active: boolean;
+  amount: number;
+  createdDate: string;
+  id: string;
+  updatedDate: string;
+  user: UserResponse;
 }

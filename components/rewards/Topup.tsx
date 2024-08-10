@@ -1,20 +1,25 @@
 "use client";
 
 import { SetStateAction, useState } from "react";
-import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import Image from "next/image";
 import Delete from "@/public/images/delete.svg";
+import { useFetchUserProfile } from "@/hooks/queries/userProfile";
+import dynamic from "next/dynamic";
+
+const Pay = dynamic(() => import("../shared/Pay"), { ssr: false });
 
 const Topup = ({
   open,
   setOpen,
-  handleSubmit,
+  setIsProcessing,
 }: {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
   handleSubmit: () => void;
+  setIsProcessing: React.Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { user } = useFetchUserProfile();
   const [balance, setBalance] = useState<string>("0");
 
   const handleButtonClick = (value: string) => {
@@ -23,12 +28,6 @@ const Topup = ({
     } else {
       setBalance((prev) => (prev === "0" ? value : prev + value));
     }
-  };
-
-  const handleProceed = () => {
-    // Handle the proceed action
-    handleSubmit();
-    console.log(`Proceed with balance: ₦${balance}`);
   };
 
   return (
@@ -77,13 +76,17 @@ const Topup = ({
             </button>
           ))}
         </div>
-        <Button
-          variant="primary"
-          onClick={handleProceed}
-          className="w-full h-12 font-medium uppercase rounded-full"
-        >
-          Pay
-        </Button>
+        <Pay
+          amount={Number(balance) * 100}
+          email={user?.email}
+          referrer={""}
+          classNames={
+            "bg-kaiglo_brand-base h-12 w-full rounded-full text-white font-medium uppercase"
+          }
+          userId={user?.id}
+          setOpen={setOpen}
+          setIsProcessing={setIsProcessing}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -18,7 +18,6 @@ import { IAddress } from "@/interfaces/address.interface";
 import PaymentDialog from "@/components/shared/PaymentDialog";
 import useAuth from "@/hooks/useAuth";
 import { useGetShippingCost } from "@/hooks/queries/getShippingCost";
-import React from "react";
 
 const BuyNowComponent = () => {
   const searchParams = useSearchParams();
