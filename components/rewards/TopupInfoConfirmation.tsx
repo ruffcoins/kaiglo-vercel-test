@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -21,6 +22,7 @@ const TopupInfoConfirmation = memo(
         <DialogContent className="w-[361px]">
           <DialogHeader>
             <DialogTitle>Topup Info</DialogTitle>
+            <DialogDescription />
           </DialogHeader>
 
           <div className="space-y-6">

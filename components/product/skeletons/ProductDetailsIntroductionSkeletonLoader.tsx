@@ -4,7 +4,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const ProductDetailsIntroductionSkeletonLoader = () => {
   return (
-    <div className="grid grid-cols-12 gap-5 lg:mx-8 xl:mx-14 mx-4 border">
+    <div className="grid grid-cols-12 gap-5 lg:mx-8 mx-4 border">
       <div className="lg:col-span-5 col-span-12">
         <Skeleton height={500} borderRadius={8} />
       </div>

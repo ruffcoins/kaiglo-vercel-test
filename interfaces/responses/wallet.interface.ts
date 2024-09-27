@@ -26,7 +26,21 @@ export interface IFundWalletResponse {
   message: string;
 }
 
+export interface IDebitWalletResponse {
+  response: DebitWallet;
+  message: string;
+}
+
 interface FundWallet {
+  active: boolean;
+  amount: number;
+  createdDate: string;
+  id: string;
+  updatedDate: string;
+  user: UserResponse;
+}
+
+interface DebitWallet {
   active: boolean;
   amount: number;
   createdDate: string;

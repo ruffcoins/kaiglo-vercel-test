@@ -119,3 +119,17 @@ export interface IProductDescriptionResponse {
   response: string;
   message: string;
 }
+
+export interface IPaginatedProductResponse {
+  content: IProduct[];
+  pageable: Pageable;
+  last: boolean;
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  sort: Sort;
+  first: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}

@@ -38,3 +38,11 @@ export interface OrderItem {
   subCategory: string;
   secSubCategory: string;
 }
+
+export interface AbandonedOrderDTO {
+  amount: string;
+  platform: string;
+  productIds: string[];
+  shipping: string;
+  userId: string;
+}

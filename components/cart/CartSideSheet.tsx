@@ -1,12 +1,13 @@
 import { CrossCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
-import { truncate } from "@/lib/utils";
+import { cn, truncate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartContext } from "@/contexts/CartContext";
 import { calculateSubTotal } from "@/lib/cartUtils";
 import { useRouter } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
 
 const CartSideSheet = ({
   open,
@@ -20,6 +21,7 @@ const CartSideSheet = ({
   const { cart, removeItem, setCheckoutItems } = useCartContext();
   const subTotal = calculateSubTotal(cart);
   const router = useRouter();
+  const { isLoggedIn } = useAuth();
 
   return (
     <div className="grid grid-cols-2 gap-2">
@@ -120,7 +122,10 @@ const CartSideSheet = ({
             <div className="flex flex-col space-y-2 py-[18px] px-6">
               <Button
                 variant="primary"
-                className="rounded-full py-3 px-8 min-h-12 mt-2 lg:mt-0 font-medium"
+                className={cn(
+                  "rounded-full py-3 px-8 min-h-12 mt-2 lg:mt-0 font-medium",
+                  !isLoggedIn && window.innerWidth <= 768 && "hidden",
+                )}
                 onClick={() => {
                   setCheckoutItems(cart);
                   router.push("/checkout/order-confirmation");

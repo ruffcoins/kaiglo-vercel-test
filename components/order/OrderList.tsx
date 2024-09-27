@@ -13,7 +13,7 @@ const OrderList = () => {
 
   if (fetchingOrders) {
     return (
-      <div className="space-x-4 flex">
+      <div className="lg:space-x-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 p-4 lg:p-0">
         {[1, 2].map((_, index) => (
           <div
             key={index}
@@ -26,7 +26,7 @@ const OrderList = () => {
               <Skeleton height={32} />
               <Skeleton height={32} />
               <Skeleton height={32} />
-              <Skeleton width={160} height={32} borderRadius={8} />
+              <Skeleton width={40} height={32} borderRadius={8} />
             </div>
           </div>
         ))}
@@ -35,7 +35,7 @@ const OrderList = () => {
   }
 
   return (
-    <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-6 p-4 lg:p-0 h-[calc(100vh-18rem)] overflow-y-auto">
+    <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-6 p-4 lg:p-0 lg:h-[calc(100vh-18rem)] h-[calc(100vh-8rem)] overflow-y-auto">
       {orders?.length === 0 ? (
         <OrderEmptyState />
       ) : (

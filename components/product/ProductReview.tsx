@@ -1,176 +1,192 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Rating from "../shared/Rating";
 import Image from "next/image";
-import Thumbnail1 from "@/public/images/product-thumbnail.jpg";
-import Thumbnail2 from "@/public/images/product-thumbnail-1.jpg";
-import Thumbnail3 from "@/public/images/product-thumbnail-2.jpg";
 import Avatar from "@/public/images/avatar.svg";
 import VerifiedBadge from "@/public/images/verified-badge.svg";
 import { Button } from "../ui/button";
-import { CaretDownIcon } from "@radix-ui/react-icons";
+import { CaretDownIcon, CaretUpIcon } from "@radix-ui/react-icons";
 import RatingIcon from "@/public/images/rating.svg";
 import FilledStar from "@/public/images/filled-star.svg";
-import ProductReviewDialog from "./ProductReviewDialog";
+import { useProductReviews } from "@/hooks/queries/products/getProductReviews";
+import { useGetRatingAndReviewSummary } from "@/hooks/queries/products/getRatingSummary";
+import moment from "moment";
 
-const reviews = [
-  {
-    name: "Eugene",
-    rating: 4,
-    date: "17/05/2024",
-    review:
-      "I've honestly been wanting a pair of these for a long time now. I had a pair similar but a different brand yrs ago but they had the velcro straps and I am not a van. these are much better! my feet don't end up sliding off the front of them at all. they actually don't always slide in all the way 🤣 which I'd definitely prefer.",
-    images: [Thumbnail1, Thumbnail2, Thumbnail3],
-  },
-  {
-    name: "Michael Pro",
-    rating: 4,
-    date: "17/05/2024",
-    review: "These are super comfy! I work at an indoor pool...",
-  },
-  {
-    name: "Ayodeji",
-    rating: 3,
-    date: "17/05/2024",
-    review:
-      "I bought the pink and black ones. I like the looks of them but not the comfort.",
-  },
-  {
-    name: "Emmanuel",
-    rating: 3,
-    date: "17/05/2024",
-    review: "My mom loved the slippers! They were very comfortable for her...",
-  },
-];
+const formatDate = (date: string) => {
+  const utcMoment = moment(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+  const formattedDate = utcMoment.format("DD-MMM-YYYY");
+  return formattedDate;
+};
 
-const ProductReviews = () => {
-  const [openReviewDialog, setOpenReviewDialog] = React.useState(false);
+const ProductReviews = ({ productId }: { productId: string }) => {
+  const { productReviews } = useProductReviews(productId);
+  const { ratingAndReviewSummary } = useGetRatingAndReviewSummary(productId);
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [visibleReviews, setVisibleReviews] = useState<number>(4);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    handleResize(); // Set initial state
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    setVisibleReviews(isMobile ? 2 : 4);
+  }, [isMobile]);
+
+  const toggleExpanded = () => {
+    if (isExpanded) {
+      setVisibleReviews(isMobile ? 2 : 4);
+    } else {
+      setVisibleReviews(isMobile ? 4 : 8);
+    }
+    setIsExpanded(!isExpanded);
+  };
 
   return (
     <>
-      <div className="lg:mx-8 xl:mx-14 mx-4 rounded-2xl p-6 bg-white space-y-8">
-        <div className="flex items-center space-x-4">
-          <h2 className="text-3xl font-medium">
-            Verified Customers Reviews (30)
+      <div className="lg:mx-8 lg:rounded-2xl lg:p-6 p-4 bg-white space-y-8">
+        <div className="flex lg:flex-row flex-col lg:items-center lg:space-x-4 space-y-2">
+          <h2 className="lg:text-3xl font-medium">
+            Verified Customers Reviews (
+            {ratingAndReviewSummary?.totalNumberOfReviews || 0})
           </h2>
-          <Rating rating={3.5} starClassNames="!w-6 !h-6" />
+          <Rating
+            rating={ratingAndReviewSummary?.averageRating || 0}
+            starClassNames="!w-6 !h-6"
+          />
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
-          <div className="col-span-1 flex bg-kaiglo_grey-50 p-6 rounded-lg gap-8 w-fit">
-            <div className="flex flex-col items-center space-y-1">
-              <p className="font-medium text-sm text-kaiglo_grey-base">
-                30 ratings
-              </p>
-              <Image
-                src={RatingIcon}
-                alt="Rating"
-                className="w-16 h-16 rounded-full"
-              />
-              <p className="font-medium text-sm text-kaiglo_grey-base">
-                Average rating
-              </p>
-              <p className="text-xl">
-                <span className="font-bold">3.5</span> / 5
-              </p>
-            </div>
-            <div className="space-y-2">
-              {[
-                { rating: 5, percentage: 68 },
-                { rating: 4, percentage: 29 },
-                { rating: 3, percentage: 15 },
-                { rating: 2, percentage: 8 },
-                { rating: 1, percentage: 51 },
-              ].map((item, index) => (
-                <div className="flex items-center space-x-2" key={index}>
-                  <p className="w-2">{item.rating}</p>
-                  <Image
-                    src={FilledStar}
-                    alt="filled star"
-                    className="w-4 h-4"
-                  />
-                  <div className="w-56 h-3 bg-kaiglo_grey-disabled rounded-full">
-                    <div
-                      className="h-3 bg-kaiglo_accent-base rounded-full"
-                      style={{ width: `${item.percentage}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="col-span-1 flex flex-col justify-center items-center space-y-4 mx-auto">
-            <p className="w-96 text-center">
-              Having recently purchased this product, could you kindly provide
-              us with your feedback?
+        <div className="grid grid-cols-3 lg:gap-8 gap-4 items-center lg:w-fit bg-kaiglo_grey-50 rounded-lg pr-4 py-4">
+          <div className="col-span-1 flex flex-col items-center space-y-1">
+            <p className="font-medium text-sm text-kaiglo_grey-base">
+              {ratingAndReviewSummary?.totalNumberOfRatings || 0} ratings
             </p>
-            <Button
-              variant="primary"
-              className="rounded-full font-semibold px-8 py-3"
-              onClick={() => setOpenReviewDialog(true)}
-            >
-              Write A Review
-            </Button>
+            <Image
+              src={RatingIcon}
+              alt="Rating"
+              className="w-16 h-16 rounded-full"
+              width={64}
+              height={64}
+            />
+            <p className="font-medium text-sm text-center text-kaiglo_grey-base text-wrap">
+              Average rating
+            </p>
+            <p className="text-xl">
+              <span className="font-bold">
+                {ratingAndReviewSummary?.averageRating || 0}
+              </span>{" "}
+              / 5
+            </p>
           </div>
+
+          <div className="col-span-2 space-y-2 w-fit pr-4 lg:px-0">
+            {ratingAndReviewSummary?.frequencyOfRatings === undefined
+              ? Object.entries({
+                  5: 0,
+                  4: 0,
+                  3: 0,
+                  2: 0,
+                  1: 0,
+                })
+                  .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
+                  .map(([rating, count]) => {
+                    return (
+                      <div className="flex items-center space-x-2" key={rating}>
+                        <p className="w-2">{rating}</p>
+                        <Image
+                          src={FilledStar}
+                          alt="filled star"
+                          className="w-4 h-4"
+                        />
+                        <div className="lg:w-56 w-40 h-3 bg-kaiglo_grey-disabled rounded-full">
+                          <div
+                            className="h-3 bg-kaiglo_accent-base rounded-full"
+                            style={{
+                              width: `${0}%`,
+                            }}
+                          ></div>
+                        </div>
+                        <p>{count}</p>
+                      </div>
+                    );
+                  })
+              : Object.entries(ratingAndReviewSummary.frequencyOfRatings)
+                  .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
+                  .map(([rating, count]) => (
+                    <div className="flex items-center space-x-2" key={rating}>
+                      <p className="w-2">{rating}</p>
+                      <Image
+                        src={FilledStar}
+                        alt="filled star"
+                        className="w-4 h-4"
+                      />
+                      <div className="w-56 h-3 bg-kaiglo_grey-disabled rounded-full">
+                        <div
+                          className="h-3 bg-kaiglo_accent-base rounded-full"
+                          style={{
+                            width: `${(count / (ratingAndReviewSummary?.totalNumberOfRatings ?? 1)) * 100}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))}
+          </div>
+          {/* </div> */}
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
-          {reviews.map((review, index) => (
+        <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-8 gap-4">
+          {productReviews?.slice(0, visibleReviews).map((review, index) => (
             <div key={index} className="p-4 rounded-md space-y-1">
               <div className="flex items-center space-x-2 space-y-1">
                 <Image
-                  src={Avatar}
+                  src={review.profilePic || Avatar}
                   alt="reviewer"
                   className="w-6 h-6 rounded-full"
+                  width={24}
+                  height={24}
                 />
-                <span className="font-bold">{review.name}</span>
-                <Rating rating={review.rating} />
+                <span className="font-bold capitalize">{review.fullName}</span>
+                <Rating rating={review.userRating} />
               </div>
-              <div className="text-kaiglo_grey-base">{review.review}</div>
-              {review.images && (
-                <div className="flex space-x-1.5 border rounded-lg p-2">
-                  {review.images.map((image, idx) => (
-                    <Image
-                      key={idx}
-                      src={image}
-                      alt="review"
-                      className="w-10 h-10 object-cover rounded-md"
-                    />
-                  ))}
-                </div>
-              )}
+              <div className="text-kaiglo_grey-base">{review.comment}</div>
               <div className="text-sm text-kaiglo_grey-base pt-2">
-                Posted on {review.date}
+                Posted on {formatDate(review.createdDate)}
               </div>
               <div className="flex space-x-1">
-                <Image src={VerifiedBadge} alt="verified badge" />
+                <Image
+                  src={VerifiedBadge}
+                  alt="verified badge"
+                  width={24}
+                  height={24}
+                />
                 <p className="text-sm text-kaiglo_brand-base">Verified Buyer</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center">
-          <Button
-            variant="secondary"
-            // onClick={toggleExpanded}
-            className="font-medium w-fit rounded-full"
-          >
-            See More <CaretDownIcon />
-            {/* {isExpanded ? "See Less" : "See More"}
-        <span>{isExpanded ? <CaretUpIcon /> : <CaretDownIcon />}</span> */}
-          </Button>
-        </div>
+        {productReviews && productReviews.length > visibleReviews && (
+          <div className="flex justify-center">
+            <Button
+              variant="secondary"
+              onClick={toggleExpanded}
+              className="font-medium w-fit rounded-full"
+            >
+              {isExpanded ? "See Less" : "See More"}
+              <span>{isExpanded ? <CaretUpIcon /> : <CaretDownIcon />}</span>
+            </Button>
+          </div>
+        )}
       </div>
-
-      {openReviewDialog && (
-        <ProductReviewDialog
-          open={openReviewDialog}
-          setOpen={setOpenReviewDialog}
-        />
-      )}
     </>
   );
 };

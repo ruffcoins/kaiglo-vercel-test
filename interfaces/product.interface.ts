@@ -21,7 +21,7 @@ export interface ProductColor {
   colorUrl: string;
 }
 
-interface ProductView {
+export interface ProductView {
   productUrl: string;
   colorCode: string | null;
 }
@@ -91,3 +91,53 @@ export interface IProduct {
   updatedDate: string;
   featured: boolean;
 }
+
+export interface ProductFilters {
+  brands?: string[];
+  category?: string;
+  subCategory?: string;
+  kaigloSale?: string;
+  maxPrice?: number;
+  minPrice?: number;
+  name?: string;
+  productColorNames?: string[];
+  productSales?: string[];
+  productShipping?: string[];
+  productSizes?: string[];
+  ramSizes?: string[];
+  secondSubCategory?: string;
+  sort?: string;
+  storages?: string[];
+}
+
+// interface Product {
+//   id: string;
+//   name: string;
+//   productUrl: string;
+//   productColors: ProductColor[];
+//   productViews: ProductView[];
+//   specifications: Specification[];
+//   colors: {
+//     color: string;
+//     newPrice: string;
+//     price: string;
+//     quantity: string;
+//     ramSize: string;
+//     size: string | null;
+//     storage: string;
+//   }[];
+//   category: string;
+//   subCategory: string;
+//   secondSubCategory: string;
+//   freeShipping: boolean;
+//   featured: boolean;
+//   sold: number;
+//   sales: boolean;
+//   kaigloSale: string;
+//   productStatus: ProductStatus;
+//   store: Store;
+//   paused: boolean;
+//   tag: string;
+//   createdDate: string;
+//   amount: string | null;
+// }

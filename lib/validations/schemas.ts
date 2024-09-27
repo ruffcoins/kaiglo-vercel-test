@@ -65,3 +65,9 @@ export const updateOrderStatusSchema = yup.object({
   orderStatus: yup.string().required("Order status is required"),
   reason: yup.string().required("Reason is required"),
 });
+
+export const updateUserSchema = yup.object({
+  firstName: yup.string().required("First Name is required"),
+  lastName: yup.string().required("Last Name is required"),
+  phone: yup.string(),
+});

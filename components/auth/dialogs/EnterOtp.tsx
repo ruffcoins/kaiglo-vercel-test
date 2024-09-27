@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -17,16 +18,20 @@ interface EnterOtpProps {
 const EnterOtp = ({ open, setOpen, email, phone }: EnterOtpProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[563px] p-8" data-testid="otp-dialog">
-        <div className="px-8 space-y-4">
+      <DialogContent
+        className="lg:w-[563px] lg:p-8 px-2 py-8"
+        data-testid="otp-dialog"
+      >
+        <div className="lg:px-8 space-y-4">
           <DialogHeader>
-            <DialogTitle className="text-center">
+            <DialogTitle className="lg:text-center text-start">
               We've sent you a verification code
             </DialogTitle>
+            <DialogDescription />
           </DialogHeader>
 
-          <div className="space-y-2 text-center">
-            <div className="flex flex-col items-center px-2 py-4 space-y-2 rounded-lg bg-kaiglo_success-50">
+          <div className="space-y-2 text-center text-sm lg:text-base">
+            <div className="mx-4 lg:mx-0 flex flex-col items-center px-2 py-4 space-y-2 rounded-lg bg-kaiglo_success-50">
               <p>
                 Please check your registered email{" "}
                 <span className="font-bold">{`“${email}”`}</span>{" "}
@@ -43,7 +48,7 @@ const EnterOtp = ({ open, setOpen, email, phone }: EnterOtpProps) => {
             <p>for a four-digit code and enter it in the box below to login</p>
           </div>
 
-          <div className="flex justify-center mx-auto">
+          <div className="flex lg:justify-center lg:mx-auto">
             <OtpFormInput
               email={email}
               phone={phone}

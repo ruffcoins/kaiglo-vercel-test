@@ -7,7 +7,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
     <main className="w-screen overflow-hidden">
       <Header />
 
-      <div className="relative mt-[200px] lg:mt-40">{children}</div>
+      <div className="relative mt-[8.3rem] lg:mt-40">{children}</div>
 
       <Footer allowCTA={false} />
     </main>

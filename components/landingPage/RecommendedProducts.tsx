@@ -30,7 +30,7 @@ const RecommendedProducts = () => {
 
   if (status === "loading") {
     return (
-      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+      <div className="lg:px-8 px-4 space-y-5">
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
           {Array.from({ length }).map((_, index) => (
             <ProductCardSkeleton key={index} />
@@ -50,13 +50,13 @@ const RecommendedProducts = () => {
   }
 
   return (
-    <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+    <div className="lg:px-8 px-4 space-y-5">
       <h1 className="font-medium text-base lg:text-[32px]">
         Recommended Products
       </h1>
 
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
-        {recommendedProducts.map((product) => (
+        {recommendedProducts?.map((product) => (
           <ProductCard
             key={product.id}
             id={product.id}
@@ -72,25 +72,25 @@ const RecommendedProducts = () => {
                 : undefined
             }
             category={product.category}
-            rating={5}
             discount={product.productColors[0].productPriceDetails[0].discount}
             imageUrl={product.productUrl}
             kaigloSale={product.kaigloSale as string}
             sales={product.sales}
             sold={product.sold}
             featured={product.featured}
+            productViews={product.productViews}
           />
         ))}
       </div>
 
-      {isFetchingNextPage && (
+      {/* {isFetchingNextPage && (
         <div className="flex justify-center items-center h-40">
           <Loader />
         </div>
-      )}
-      <div ref={ref}>
-        {/* This empty div acts as a sentinel for the IntersectionObserver */}
-      </div>
+      )} */}
+      {/* <div ref={ref}> */}
+      {/* This empty div acts as a sentinel for the IntersectionObserver */}
+      {/* </div> */}
     </div>
   );
 };

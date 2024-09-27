@@ -52,6 +52,8 @@ const AddToWishlistButton = ({
         src={isOnMyWishList ? FilledHeart : EmptyHeart}
         alt="empty heart image"
         className="relative w-6 h-6 left-50"
+        width={24}
+        height={24}
       />
     </div>
   );

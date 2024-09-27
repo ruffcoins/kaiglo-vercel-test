@@ -58,12 +58,12 @@ const UserDropdown: React.FC = () => {
           className="w-12 h-12 border-2 rounded-full"
         />
       ) : (
-        <Avatar
-          size={40}
-          name={user?.fullName}
-          variant="bauhaus"
-          colors={["#008000", "#FFC12E", "#FF6617", "#FFC12E"]}
-        />
+        <div className="-mt-1 flex items-center justify-center w-12 h-12 border border-kaiglo_success-200 rounded-full bg-kaiglo_success-50">
+          <p className="font-medium text-kaiglo_grey-700">
+            {user?.firstName?.[0] || ""}
+            {user?.lastName?.[0] || ""}
+          </p>
+        </div>
       )}
     </div>
   );

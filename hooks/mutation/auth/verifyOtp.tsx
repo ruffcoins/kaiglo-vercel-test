@@ -21,6 +21,8 @@ export const useVerifyOtp = ({
     IVerifyOtpErrorResponse | undefined
   >(undefined);
 
+  const originalUrl = sessionStorage.getItem("originalUrl") || "/";
+
   const showToast = useShowToast();
 
   useEffect(() => {
@@ -30,7 +32,6 @@ export const useVerifyOtp = ({
       }
 
       if (setShowOtpModal === undefined) {
-        const originalUrl = sessionStorage.getItem("originalUrl") || "/";
         router.push(originalUrl);
       }
 

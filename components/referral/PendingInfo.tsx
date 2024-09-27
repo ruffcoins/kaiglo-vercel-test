@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -19,9 +20,10 @@ const PendingInfo = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[400px]">
+      <DialogContent className="lg:w-[400px]">
         <DialogHeader>
           <DialogTitle>Info</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
 
         <p className="my-4">

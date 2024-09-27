@@ -1,12 +1,10 @@
 import { putRequest } from "@/utils/apiCaller";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { IFundWalletResponse } from "@/interfaces/responses/wallet.interface";
 import useShowToast from "@/hooks/useShowToast";
 
 interface FundWalletDTO {
   amount: number;
-  // channel: string;
-  // debitId: string;
   description: string;
   referenceCode: string;
   tranType: string;
@@ -14,7 +12,6 @@ interface FundWalletDTO {
 }
 
 export const useFundWallet = () => {
-  const queryClient = useQueryClient();
   const showToast = useShowToast();
 
   const fundWalletMutation = async (payload: FundWalletDTO) => {
@@ -27,9 +24,6 @@ export const useFundWallet = () => {
   const { mutate, isLoading, ...rest } = useMutation({
     mutationFn: fundWalletMutation,
     onSuccess: () => {
-      queryClient.invalidateQueries(["wallet-history"]);
-      queryClient.invalidateQueries(["user-wallet"]);
-
       showToast({
         altText: "Fund wallet",
         title: "Wallet funded successfully",

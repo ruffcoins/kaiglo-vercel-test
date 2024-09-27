@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -57,11 +58,14 @@ const AddressListDialog = ({
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="w-10/12 xl:w-7/12">
+        <DialogContent className="w-full lg:w-10/12 xl:w-7/12 max-w-full sm:max-w-none">
           <DialogHeader>
-            <DialogTitle className="h-8">Address Book</DialogTitle>
+            <DialogTitle className="h-8 text-start lg:text-center text-lg lg:text-xl">
+              Address Book
+            </DialogTitle>
+            <DialogDescription />
             {addresses && addresses.length > 0 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-8 max-h-[400px] overflow-y-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4 lg:my-8 max-h-[60vh] lg:max-h-[400px] overflow-y-auto">
                 {addresses.map((address, index) => (
                   <AddressCard
                     id={address.id}
@@ -87,12 +91,12 @@ const AddressListDialog = ({
               </div>
             )}
 
-            <div className="flex justify-between space-x-4 py-4">
+            <div className="flex flex-col lg:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-4 py-4">
               <ModifiedButton
                 type="button"
                 variant="secondary"
                 value="Add New Address"
-                className="rounded-full w-96 py-3 px-8"
+                className="rounded-full w-full lg:w-auto py-3 px-8"
                 onClick={() => {
                   setOpenNewAddressDialog(true);
                 }}
@@ -104,7 +108,7 @@ const AddressListDialog = ({
                 value="Confirm"
                 onClick={handleConfirm}
                 disabled={!localSelectedAddress}
-                className="rounded-full w-96 py-3 px-8"
+                className="rounded-full w-full lg:w-auto py-3 px-8"
               />
             </div>
           </DialogHeader>

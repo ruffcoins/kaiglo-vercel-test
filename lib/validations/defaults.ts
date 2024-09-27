@@ -58,3 +58,8 @@ export const updateOrderStatusDefaultValues = {
   orderStatus: "PENDING",
   reason: "",
 };
+
+export const updateUserDefaultValues = {
+  firstName: "",
+  lastName: "",
+};

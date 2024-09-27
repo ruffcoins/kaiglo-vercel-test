@@ -289,3 +289,8 @@ export interface UpdateOrderStatusResponse {
   message: string;
   response: string;
 }
+
+export interface CreateOrderResponse {
+  message: string;
+  response: string;
+}

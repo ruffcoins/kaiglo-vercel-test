@@ -657,25 +657,25 @@ const SneakersProducts = () => {
         sales={product.sales}
         name={product.name}
         price={product.productColors[0].productPriceDetails[0].price}
-        rating={5}
         imageUrl={product.productUrl}
         sold={product.sold}
         category={product.category}
         discount={product.productColors[0].productPriceDetails[0].discount}
         kaigloSale={product.kaigloSale as string}
         featured={product.featured}
+        productViews={product.productViews}
       />
     ));
   };
 
   return (
-    <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+    <div className="lg:px-8 px-4 space-y-5">
       <div className="flex justify-between items-center">
         <h1 className="font-medium text-base lg:text-[32px]">Sneakers</h1>
         <Button
           variant="secondary"
           disabled
-          className="rounded-full font-medium disabled:cursor-wait"
+          className="rounded-full font-medium disabled:cursor-wait text-sm lg:text-base"
         >
           More Products <ChevronRightIcon className="w-5 h-5 hidden lg:block" />
         </Button>

@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -20,9 +21,10 @@ const WithdrawBonus = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[400px]">
+      <DialogContent className="lg:w-[400px]">
         <DialogHeader>
           <DialogTitle>Reward Credited</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
 
         <p className="my-4">

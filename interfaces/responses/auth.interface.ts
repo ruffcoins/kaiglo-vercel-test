@@ -14,3 +14,8 @@ export interface IVerifyOtpErrorResponse {
   error: string;
   path: string;
 }
+
+export interface IUpdateUserResponse {
+  response: string;
+  message: string;
+}

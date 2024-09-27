@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
 
 const DeleteCartItemsDialog = ({
   open,
@@ -16,17 +18,23 @@ const DeleteCartItemsDialog = ({
 }: {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
-  deleteCartItems: () => void;
+  deleteCartItems: () => Promise<void>;
 }) => {
+  const [removingItem, setRemovingItem] = useState(false);
   const handleDelete = () => {
-    deleteCartItems();
-    setOpen(false);
+    setRemovingItem(true);
+    deleteCartItems().then(() => {
+      setRemovingItem(false);
+      setOpen(false);
+    });
   };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open}>
       <DialogContent className="lg:w-[400px]">
         <DialogHeader>
           <DialogTitle>Delete Cart Items</DialogTitle>
+          <DialogDescription />
           <DialogDescription className="py-4">
             Do you want to delete the selected item(s) from your cart?
           </DialogDescription>
@@ -36,6 +44,7 @@ const DeleteCartItemsDialog = ({
             variant="outline"
             className="rounded-full py-3 px-8 min-h-12 mt-2 lg:mt-0"
             onClick={() => setOpen(false)}
+            disabled={removingItem}
           >
             Cancel
           </Button>
@@ -43,8 +52,9 @@ const DeleteCartItemsDialog = ({
             variant="critical_solid"
             className="rounded-full flex-1 min-h-12"
             onClick={handleDelete}
+            disabled={removingItem}
           >
-            Delete
+            {removingItem ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

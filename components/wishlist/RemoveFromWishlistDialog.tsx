@@ -31,6 +31,7 @@ const RemoveFromWishlistDialog = ({
       <DialogContent className="lg:w-[400px]">
         <DialogHeader>
           <DialogTitle>Delete</DialogTitle>
+          <DialogDescription />
           <DialogDescription className="py-4">
             Do you want to delete this product from your wishlist?
           </DialogDescription>

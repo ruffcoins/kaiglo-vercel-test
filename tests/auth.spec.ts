@@ -28,6 +28,7 @@ test("open auth modal", async ({ page }) => {
 //   await expect(toastLocator).toHaveText("Otp sent");
 
 // });
+// });
 
 test("Failed Sign up attempt", async ({ page }) => {
   await page.goto("/");

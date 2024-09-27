@@ -1,111 +1,182 @@
-import Image from "next/image";
-import { ChevronRightIcon } from "@radix-ui/react-icons";
-import Store from "@/public/images/store.jpg";
-import VerifiedBadge from "@/public/images/verified-badge.svg";
-import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
-import FlashSaleProductCard from "@/components/landingPage/FlashSaleProductCard";
-import Thumbnail1 from "@/public/images/product-thumbnail.jpg";
-import Thumbnail2 from "@/public/images/product-thumbnail-1.jpg";
-import Thumbnail3 from "@/public/images/product-thumbnail-2.jpg";
 import ProductDescription from "@/components/product/ProductDescription";
 import ProductReviews from "@/components/product/ProductReview";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import InnerPageLayout from "@/components/layouts/InnerPageLayout";
 import ProductDetailsIntroductionSkeletonLoader from "@/components/product/skeletons/ProductDetailsIntroductionSkeletonLoader";
+import ProductStoreSkeleton from "@/components/product/skeletons/ProductStore";
+import { postRequest } from "@/utils/apiCaller";
+import { IProductDetailResponse } from "@/interfaces/responses/product.interface";
+import { capitalizeFirstLetterOfEachWord } from "@/lib/utils";
+import { Metadata, ResolvingMetadata } from "next/types";
+
+type Props = {
+  params: { slug: string; productId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const { productId, slug } = params;
+  const { response: product } = await postRequest<
+    { productId: string },
+    IProductDetailResponse
+  >({
+    url: "/product/product-detail-v2",
+    payload: { productId },
+  });
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://kaiglo.com";
+  const productUrl = `${baseUrl}${product.productUrl}`;
+
+  return {
+    title: `${product.name} | ${product.store.storeName} | Kaiglo Nigeria`,
+    description:
+      product.productDescriptionSummary ||
+      product.description?.slice(0, 160) ||
+      `${product.name} in ${product.category}`,
+    keywords: [
+      product.category,
+      product.subCategory,
+      product.secondSubCategory,
+      ...product.productColors.map((pc) => pc.color.color),
+      product.tag,
+      product.inputTag,
+    ].filter(
+      (keyword): keyword is string => keyword !== null && keyword !== undefined,
+    ),
+    openGraph: {
+      title: `${product.name} | ${product.store.storeName} | Kaiglo Nigeria`,
+      description:
+        product.productDescriptionSummary ||
+        product.description?.slice(0, 160) ||
+        `${product.name} in ${product.category}`,
+      url: `${baseUrl}/product/${slug}/${productId}`,
+      siteName: "Kaiglo Nigeria",
+      images: [
+        ...product.productViews.map((pv) => ({
+          url: pv.productUrl,
+          alt: `${product.name}`,
+        })),
+        ...previousImages,
+      ],
+      locale: "en_NG",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} | ${product.store.storeName} | Kaiglo Nigeria`,
+      description:
+        product.productDescriptionSummary ||
+        product.description?.slice(0, 160) ||
+        `${product.name} in ${product.category}`,
+      images: [
+        ...product.productViews.map((pv) => ({
+          url: pv.productUrl,
+          alt: `${product.name}`,
+        })),
+      ],
+      site: "@KaigloNGR",
+    },
+    other: {
+      "product:price:amount":
+        product.productColors[0]?.productPriceDetails[0]?.price.toString(),
+      "product:price:currency": "NGN",
+      "product:availability": product.productStatus.status,
+      "product:condition": "new",
+      "product:store": product.store.storeName,
+      "product:category": product.category,
+      "product:sku":
+        product.productColors[0]?.productPriceDetails[0]?.sku || "",
+    },
+    alternates: {
+      canonical: productUrl,
+    },
+    robots: {
+      index: !product.paused && !product.isDeleted,
+      follow: !product.paused && !product.isDeleted,
+      nocache: product.paused || product.isDeleted,
+    },
+    applicationName: "Kaiglo Nigeria",
+    creator: product.store.storeName,
+    publisher: "Kaiglo Nigeria",
+    category: product.category,
+    referrer: "origin-when-cross-origin",
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+  };
+}
+
+const ProductDetailsIntroduction = dynamic(
+  () => import("@/components/product/ProductDetailsIntroduction"),
+  {
+    ssr: false,
+    loading: () => <ProductDetailsIntroductionSkeletonLoader />,
+  },
+);
+
+const ProductStore = dynamic(
+  () => import("@/components/product/ProductStore"),
+  {
+    ssr: false,
+    loading: () => <ProductStoreSkeleton />,
+  },
+);
 
 export default async function Product({
   params,
 }: {
   params: { slug: string; productId: string };
 }) {
-  const { slug, productId } = params;
+  const { productId } = params;
+  const { response } = await postRequest<
+    { productId: string },
+    IProductDetailResponse
+  >({
+    url: "/product/product-detail-v2",
+    payload: { productId },
+  });
 
-  // Dynamically import the ClientInnerPages component with SSR disabled
-  const ProductDetailsIntroduction = dynamic(
-    () => import("@/components/product/ProductDetailsIntroduction"),
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
     {
-      ssr: false,
-      loading: () => <ProductDetailsIntroductionSkeletonLoader />,
+      label: capitalizeFirstLetterOfEachWord(response.category),
+      href: `/category/${response.category}`,
     },
-  );
+    { label: capitalizeFirstLetterOfEachWord(response.subCategory) },
+  ];
 
   return (
-    <InnerPageLayout>
-      <div className="space-y-5 my-10">
+    <InnerPageLayout
+      allowCTA
+      breadcrumbItems={breadcrumbItems}
+      productId={productId}
+    >
+      <div className="lg:space-y-5 space-y-1 lg:my-4 my-6">
         <ProductDetailsIntroduction productId={productId} />
 
-        <div className="bg-white rounded-2xl lg:mx-8 xl:mx-14 mx-4 p-6 space-y-4">
-          <div className="flex justify-end items-center">
-            <Button variant="secondary" className="rounded-full font-medium">
-              View More <ChevronRightIcon className="w-4 h-4 hidden lg:block" />
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-12">
-            <div className="col-span-5 flex space-x-4">
-              <Image src={Store} alt="Store" width={128} height={128} />
-              <div className="flex flex-col space-y-2">
-                <h1 className="font-bold">Variety Store</h1>
-                <div className="flex space-x-1">
-                  <p className="font-bold text-sm">251k</p>
-                  <p className="text-kaiglo_grey-placeholder text-sm">
-                    Followers
-                  </p>
-                </div>
-                <div className="flex space-x-4">
-                  <div className="flex space-x-1">
-                    <Image src={VerifiedBadge} alt="verified badge" />
-                    <p className="text-sm">Top Seller</p>
-                  </div>
-                  <div className="flex space-x-1">
-                    <Image src={VerifiedBadge} alt="verified badge" />
-                    <p className="text-sm">Verified Seller</p>
-                  </div>
-                </div>
-                <Button
-                  variant="secondary"
-                  className="rounded-full w-fit font-medium"
-                >
-                  Visit Store
-                </Button>
-              </div>
-            </div>
-            <div className="col-span-7 flex space-x-4">
-              <FlashSaleProductCard
-                title="Adidas Boost Breathable Lightweight Gymnastics Running Sneakers"
-                price="₦780,580"
-                oldPrice="₦880,580"
-                rating={3}
-                imageUrl={Thumbnail1}
-                id="jhjk"
-              />
-              <FlashSaleProductCard
-                title="Water Dispenser"
-                price="₦780,580"
-                oldPrice="₦880,580"
-                rating={3}
-                imageUrl={Thumbnail2}
-                id="kkjkl"
-              />
-              <FlashSaleProductCard
-                title="Water Dispenser"
-                price="₦780,580"
-                oldPrice="₦880,580"
-                rating={3}
-                imageUrl={Thumbnail3}
-                id="kkjkl"
-              />
-            </div>
-          </div>
+        <div className="hidden lg:block">
+          <ProductStore productId={productId} />
         </div>
 
         <ProductDescription productId={productId} />
 
-        <ProductReviews />
+        <ProductReviews productId={productId} />
 
-        <div className="lg:mx-8 xl:mx-14 mx-4 rounded-2xl p-6 bg-white space-y-8">
-          <h2 className="text-3xl font-medium">
+        <div className="lg:hidden block">
+          <ProductStore productId={productId} />
+        </div>
+
+        <div className="lg:mx-8 lg:rounded-2xl p-6 bg-white lg:space-y-8 space-y-4">
+          <h2 className="lg:text-3xl font-medium">
             Seller’s Warranty + Return Policy
           </h2>
           <p>

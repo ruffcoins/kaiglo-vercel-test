@@ -1,7 +1,13 @@
 "use client";
 
 import { SetStateAction, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import Image from "next/image";
 import Delete from "@/public/images/delete.svg";
 import { useFetchUserProfile } from "@/hooks/queries/userProfile";
@@ -32,9 +38,10 @@ const Topup = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[500px]">
+      <DialogContent className="lg:w-[500px]">
         <DialogHeader>
           <DialogTitle>Topup Balance</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
 
         <div className=" flex items-center px-6 my-6 bg-kaiglo_grey-50 h-20 rounded-2xl">
@@ -86,6 +93,8 @@ const Topup = ({
           userId={user?.id}
           setOpen={setOpen}
           setIsProcessing={setIsProcessing}
+          setBalance={setBalance}
+          action="topup"
         />
       </DialogContent>
     </Dialog>

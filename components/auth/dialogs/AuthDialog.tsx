@@ -29,10 +29,7 @@ export function AuthDialog({
 
   return (
     <Dialog open={openAuthModal} onOpenChange={setOpenAuthModal}>
-      <DialogContent
-        className="w-[563px] transition-all duration-500"
-        data-testid="auth-dialog"
-      >
+      <DialogContent className="lg:w-[563px] transition-all duration-500">
         <div className="space-y-6">
           <div className="space-y-6">
             <div className="space-y-6">
@@ -41,6 +38,7 @@ export function AuthDialog({
                   <DialogTitle className="flex justify-center">
                     <Logo className="w-28" />
                   </DialogTitle>
+                  <DialogDescription />
                   <DialogDescription className="flex space-x-4 justify-center mx-auto">
                     <ModifiedButton
                       type="button"

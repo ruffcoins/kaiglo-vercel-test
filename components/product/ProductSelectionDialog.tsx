@@ -1,12 +1,17 @@
 import React, { SetStateAction, useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import Placeholder from "@/public/images/product-image-placeholder.png";
 import { ProductColor } from "@/interfaces/product.interface";
-import CartSideSheet from "../cart/CartSideSheet";
 import { useFetchUserProfile } from "@/hooks/queries/userProfile";
 import useAddItemToCart from "@/hooks/mutation/cart/addItemToCart";
 import {
@@ -17,6 +22,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useCartContext } from "@/contexts/CartContext";
 import useAuth from "@/hooks/useAuth";
+import { useProductDetails } from "@/hooks/queries/products/useProductDetails";
 
 interface ProductSelectionProps {
   open: boolean;
@@ -39,6 +45,7 @@ const ProductSelectionDialog = ({
   setOpenAuthModal,
   setOpenSideCart,
 }: ProductSelectionProps) => {
+  const { data } = useProductDetails(productId);
   const { user } = useFetchUserProfile();
   const { isLoggedIn } = useAuth();
   const { addItemToCart } = useAddItemToCart();
@@ -101,6 +108,7 @@ const ProductSelectionDialog = ({
 
       setCurrentPrice(
         updatePrice(
+          data?.response.kaigloSale,
           selectedColor,
           selectedSize,
           selectedRamSize,
@@ -119,6 +127,7 @@ const ProductSelectionDialog = ({
   };
 
   const updatePrice = (
+    kaigloSale: string | undefined | null,
     color: string,
     size?: string,
     ramSize?: string,
@@ -132,10 +141,20 @@ const ProductSelectionDialog = ({
           d.size === size && d.ramSize === ramSize && d.storage === storage,
       );
       if (matchingPriceDetail) {
-        if (matchingPriceDetail.newPrice) {
-          return matchingPriceDetail.newPrice * quantity;
+        if (typeof kaigloSale === "string") {
+          if (kaigloSale === "GROUP_BUY" || kaigloSale === "APP_ONLY_DEALS") {
+            return matchingPriceDetail.price * quantity;
+          } else {
+            return (
+              (matchingPriceDetail.newPrice ?? matchingPriceDetail.price) *
+              quantity
+            );
+          }
         } else {
-          return matchingPriceDetail.price * quantity;
+          return (
+            (matchingPriceDetail.newPrice ?? matchingPriceDetail.price) *
+            quantity
+          );
         }
       }
     }
@@ -187,6 +206,7 @@ const ProductSelectionDialog = ({
 
     setCurrentPrice(
       updatePrice(
+        data?.response.kaigloSale,
         selectedColor,
         size,
         selectedRamSize,
@@ -212,6 +232,7 @@ const ProductSelectionDialog = ({
 
     setCurrentPrice(
       updatePrice(
+        data?.response.kaigloSale,
         selectedColor,
         selectedSize,
         ramSize,
@@ -237,6 +258,7 @@ const ProductSelectionDialog = ({
 
     setCurrentPrice(
       updatePrice(
+        data?.response.kaigloSale,
         selectedColor,
         selectedSize,
         selectedRamSize,
@@ -252,6 +274,7 @@ const ProductSelectionDialog = ({
         const newQuantity = Math.min(maxQuantity, prev + 1);
         setCurrentPrice(
           updatePrice(
+            data?.response.kaigloSale,
             selectedColor,
             selectedSize,
             selectedRamSize,
@@ -270,6 +293,7 @@ const ProductSelectionDialog = ({
         const newQuantity = Math.max(1, prev - 1);
         setCurrentPrice(
           updatePrice(
+            data?.response.kaigloSale,
             selectedColor,
             selectedSize,
             selectedRamSize,
@@ -315,6 +339,7 @@ const ProductSelectionDialog = ({
 
       setCurrentPrice(
         updatePrice(
+          data?.response.kaigloSale,
           firstColor,
           firstPriceDetail.size,
           firstPriceDetail.ramSize,
@@ -328,6 +353,7 @@ const ProductSelectionDialog = ({
   useEffect(() => {
     setCurrentPrice(
       updatePrice(
+        data?.response.kaigloSale,
         selectedColor,
         selectedSize,
         selectedRamSize,
@@ -350,7 +376,12 @@ const ProductSelectionDialog = ({
     const product = {
       color: selectedColor,
       platform: "WEB",
-      price: getPrice?.newPrice ?? getPrice?.price ?? 0,
+      price:
+        typeof data?.response.kaigloSale === "string" &&
+        (data?.response.kaigloSale === "GROUP_BUY" ||
+          data?.response.kaigloSale === "APP_ONLY_DEALS")
+          ? getPrice?.price ?? 0
+          : getPrice?.newPrice ?? getPrice?.price ?? 0,
       productId,
       productUrl,
       quantity: quantity.toString(),
@@ -369,14 +400,15 @@ const ProductSelectionDialog = ({
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
-          className="w-[563px] transition-all duration-500"
+          className="w-full rounded md:w-[563px] !md:h-fit overflow-hidden overflow-y-auto transition-all duration-500"
           data-testid="auth-dialog"
         >
-          <div className="space-y-4">
+          <div className="space-y-6">
             <DialogHeader>
-              <DialogTitle>
-                <h1>Select Colour, Size Option</h1>
+              <DialogTitle className="text-start lg:text-center">
+                Select Colour, Size Option
               </DialogTitle>
+              <DialogDescription />
             </DialogHeader>
 
             <div className="space-y-2">
@@ -386,7 +418,7 @@ const ProductSelectionDialog = ({
                   {selectedColor}
                 </span>
               </div>
-              <div className="flex space-x-2">
+              <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
                 {colors.map((color, index) => (
                   <Image
                     key={index}
@@ -394,7 +426,7 @@ const ProductSelectionDialog = ({
                     alt={"product image"}
                     width={80}
                     height={80}
-                    className={`min-h-20 max-h-20 max-w-20 min-w-20 border-2 rounded-xl cursor-pointer ${selectedColor === color.color.color ? "border-4 border-kaiglo_success-base " : "border-kaiglo_grey-placeholder"}`}
+                    className={`min-h-[74px] max-h-[74px] min-w-[74px] max-w-[74px] lg:min-h-20 lg:max-h-20 lg:max-w-20 lg:min-w-20 border-2 rounded-xl cursor-pointer ${selectedColor === color.color.color ? "border-4 border-kaiglo_success-base " : "border-kaiglo_grey-placeholder"}`}
                     onClick={() => handleColorChange(color.color.color)}
                   />
                 ))}
@@ -407,12 +439,12 @@ const ProductSelectionDialog = ({
                   <span>SIZE:</span>
                   <span className="text-kaiglo_brand-base">{selectedSize}</span>
                 </div>
-                <div className="flex space-x-2">
+                <div className="grid grid-cols-5 md:grid-cols-8 gap-4">
                   {availableSizes.map((size, index) => (
                     <Button
                       variant="outline"
                       key={index}
-                      className={`w-14 h-14 px-4 py-2 border rounded-xl  ${selectedSize === size ? "bg-kaiglo_success-base text-white" : "bg-white border-2 text-kaiglo_grey-base border-kaiglo_grey-placeholder font-medium"}`}
+                      className={`w-14 h-14 px-4 py-2 border rounded-xl text-xs  ${selectedSize === size ? "bg-kaiglo_success-base text-white" : "bg-white border-2 text-kaiglo_grey-base border-kaiglo_grey-placeholder font-medium"}`}
                       onClick={() => handleSizeChange(size as string)}
                     >
                       {size}
@@ -471,8 +503,8 @@ const ProductSelectionDialog = ({
               )}
 
             <div className="space-y-8">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-6">
+              <div className="flex flex-wrap space-y-4 items-center justify-between">
+                <div className="flex w-full justify-between xl:justify-start items-center xl:space-x-6">
                   <div className="text-kaiglo_grey-base font-medium text-sm space-x-2">
                     <span>QUANTITY:</span>
                     <span className="text-kaiglo_brand-base">{quantity}</span>
@@ -512,24 +544,36 @@ const ProductSelectionDialog = ({
               <div className="">
                 <div className="flex items-center space-x-4 text-kaiglo_grey-base font-medium text-sm">
                   <span> PRICE:</span>
-                  <span className="text-xl font-bold">
-                    ₦
-                    {quantity === 0
+                  {colors.length === 0 ? (
+                    <span className="h-6 w-32 bg-slate-300 animate-pulse"></span>
+                  ) : (
+                    <span className="text-xl font-bold">
+                      ₦
+                      {typeof data?.response.kaigloSale === "string" &&
+                      (data?.response.kaigloSale === "GROUP_BUY" ||
+                        data?.response.kaigloSale === "APP_ONLY_DEALS")
+                        ? colors?.[0]?.productPriceDetails?.[0]?.price?.toLocaleString() ??
+                          0
+                        : colors?.[0]?.productPriceDetails?.[0]?.newPrice?.toLocaleString() ??
+                          colors?.[0]?.productPriceDetails?.[0]?.price?.toLocaleString() ??
+                          0}
+                      {/* {quantity === 0
                       ? colors[0].productPriceDetails[0].price.toLocaleString()
-                      : currentPrice.toLocaleString()}
-                  </span>
+                      : currentPrice.toLocaleString()} */}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-between space-x-14">
+            <div className="flex md:flex-row flex-col justify-between md:space-x-14 space-y-4 md:space-y-0">
               <Button
                 variant="accent"
                 className={cn(
                   quantity < 1 && "cursor-not-allowed",
                   "text-black rounded-full w-full h-12 uppercase font-medium bg-kaiglo_accent-100",
                 )}
-                disabled={quantity < 1}
+                disabled={quantity < 1 || colors.length === 0}
                 onClick={() => {
                   if (quantity > 0) {
                     setOpenSideCart?.(true);
@@ -569,7 +613,7 @@ const ProductSelectionDialog = ({
                   quantity < 1 && "cursor-not-allowed",
                   "bg-kaiglo_brand-base w-full h-12 text-white rounded-full px-8 py-3 uppercase font-medium",
                 )}
-                disabled={quantity < 1}
+                disabled={quantity < 1 || colors.length === 0}
                 onClick={() => {
                   setCheckoutItems([buyNowProduct as ICacheCart]);
                   if (isLoggedIn) {

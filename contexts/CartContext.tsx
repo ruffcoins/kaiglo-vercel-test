@@ -21,6 +21,7 @@ import useRemoveItemFromCart from "@/hooks/mutation/cart/removeItemFromCart";
 import useUpdateItemQuantity from "@/hooks/mutation/cart/updateItemQuantity";
 import { useQueryClient } from "@tanstack/react-query";
 import useAddItemToCart from "@/hooks/mutation/cart/addItemToCart";
+import useAddMultipleItemsToCart from "@/hooks/mutation/cart/addMultipleItemsToCart";
 interface CartContextType {
   cart: ICacheCart[];
   setCart: React.Dispatch<React.SetStateAction<ICacheCart[]>>;
@@ -30,7 +31,7 @@ interface CartContextType {
   toggleItemCheck: (productId: string, index: number, checked: boolean) => void;
   subTotal: number;
   removeItem: (index: number) => void;
-  removeCheckedItems: () => void;
+  removeCheckedItems: () => Promise<void>;
   handleMergeCarts: () => void;
   getCheckedItems: () => ICacheCart[];
   checkoutItems: ICacheCart[];
@@ -55,6 +56,7 @@ const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     useRemoveItemFromCart();
   const { updateItemQuantity } = useUpdateItemQuantity();
   const { addItemToCartAsync } = useAddItemToCart();
+  const { addMultipleItemsToCartAsync } = useAddMultipleItemsToCart();
 
   useEffect(() => {
     let cartToUse: ICacheCart[];
@@ -214,8 +216,8 @@ const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
     if (user && tempCart.length > 0) {
       try {
-        for (const item of tempCart) {
-          const cartItem: ICacheCart = {
+        const cartItems: ICacheCart[] = tempCart.map((item) => {
+          return {
             color: item.color,
             platform: "WEB",
             price: item.price,
@@ -229,9 +231,9 @@ const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             productName: item.productName,
             maxQuantity: item.maxQuantity.toString(),
           };
+        });
 
-          await addItemToCartAsync(cartItem);
-        }
+        await addMultipleItemsToCartAsync(cartItems);
 
         clearCartCookies();
 
@@ -240,7 +242,7 @@ const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         console.error("Error synching carts:", error);
       }
     }
-  }, [user, addItemToCartAsync]);
+  }, [user]);
 
   const getCheckedItems = useCallback(() => {
     return cart.filter(

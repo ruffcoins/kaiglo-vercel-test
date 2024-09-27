@@ -9,6 +9,7 @@ import Cart from "@/public/images/cart.svg";
 import FeaturedCart from "@/public/images/cart-featured.svg";
 import GroupBuyCart from "@/public/images/group-buy-cart.svg";
 import AppDealsCart from "@/public/images/app-deals-cart.svg";
+import TopSellingCart from "@/public/images/top-selling-cart.svg";
 import { cn, createSlug, truncate } from "@/lib/utils";
 import Link from "next/link";
 import { useFetchUserProfile } from "@/hooks/queries/userProfile";
@@ -19,6 +20,9 @@ import { useState } from "react";
 import { AuthDialog } from "../auth/dialogs/AuthDialog";
 import EnterOtp from "../auth/dialogs/EnterOtp";
 import CartSideSheet from "../cart/CartSideSheet";
+import { useGetRatingAndReviewSummary } from "@/hooks/queries/products/getRatingSummary";
+import Placeholder from "@/public/images/product-image-placeholder.png";
+import { ProductView } from "@/interfaces/product.interface";
 
 export interface ProductCardProps {
   id: string;
@@ -27,12 +31,13 @@ export interface ProductCardProps {
   name: string;
   price: number;
   oldPrice?: number;
-  rating: number;
   imageUrl: string;
   sold: number;
   category: string;
   discount: number;
   featured?: boolean;
+  cartImageColor?: string;
+  productViews: ProductView[];
 }
 
 const ProductCard = ({
@@ -45,16 +50,17 @@ const ProductCard = ({
   price,
   oldPrice,
   imageUrl,
-  rating,
   discount,
   featured,
+  cartImageColor,
+  productViews,
 }: ProductCardProps) => {
   const { user } = useFetchUserProfile();
   const { isOnMyWishList, setIsOnMyWishList } = useIsProductInWishlist(
     id,
     user?.wishListItems,
   );
-
+  const { ratingAndReviewSummary } = useGetRatingAndReviewSummary(id);
   const {
     data,
     colors,
@@ -76,9 +82,9 @@ const ProductCard = ({
           <div className="relative">
             <Link href={`/product/${createSlug(name)}/${id}`}>
               <Image
-                src={imageUrl}
+                src={imageUrl || Placeholder}
                 alt="product image"
-                className="w-full h-[154px] lg:h-[220px] rounded-lg"
+                className="w-full h-[156px] lg:h-[220px] rounded-lg"
                 width={150}
                 height={220}
               />
@@ -119,7 +125,7 @@ const ProductCard = ({
               {truncate(category?.toLocaleLowerCase(), 16)}
             </p>
             <div className="flex lg:flex-row flex-col items-start lg:items-center lg:space-x-4 space-y-1 lg:space-y-0">
-              <Rating rating={rating} />
+              <Rating rating={ratingAndReviewSummary?.averageRating || 0} />
               {sold > 0 && <span className="text-xs">{sold} sold</span>}
             </div>
           </div>
@@ -138,21 +144,24 @@ const ProductCard = ({
           <div
             className={cn(
               "w-10 h-10 flex justify-center items-center rounded-lg",
-              kaigloSale === "GROUP_BUY" && "!bg-kaiglo_attention-100",
-              kaigloSale === "APP_ONLY_DEALS" && "!bg-kaiglo_info-100",
-              featured && "!bg-kaiglo_purple-100",
+              cartImageColor === "purple" && "!bg-kaiglo_purple-100",
+              cartImageColor === "attention" && "!bg-kaiglo_attention-100",
+              cartImageColor === "info" && "!bg-kaiglo_info-100",
+              cartImageColor === "green" && "!bg-kaiglo_success-50",
               "bg-kaiglo_grey-100",
             )}
           >
             <Image
               src={
-                kaigloSale === "GROUP_BUY"
-                  ? GroupBuyCart
-                  : kaigloSale === "APP_ONLY_DEALS"
-                    ? AppDealsCart
-                    : featured
-                      ? FeaturedCart
-                      : Cart
+                cartImageColor === "purple"
+                  ? FeaturedCart
+                  : cartImageColor === "attention"
+                    ? GroupBuyCart
+                    : cartImageColor === "info"
+                      ? AppDealsCart
+                      : cartImageColor === "green"
+                        ? TopSellingCart
+                        : Cart
               }
               alt="cart icon"
               onClick={toggleProductSelectionDialog}

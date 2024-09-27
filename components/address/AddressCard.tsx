@@ -45,8 +45,8 @@ const AddressCard = ({
   return (
     <>
       <div className="p-2 flex flex-col space-y-4 border rounded-lg">
-        <div className="flex items-center justify-between p-2 rounded bg-kaiglo_grey-100">
-          <div className="flex space-x-2 items-center">
+        <div className="flex flex-row items-center border justify-between p-2 rounded bg-kaiglo_grey-100">
+          <div className="flex space-x-2 items-center mb-0">
             <input
               type="radio"
               id={`address-${id}`}
@@ -101,21 +101,21 @@ const AddressCard = ({
           )}
         </div>
 
-        <div className="grid grid-rows-2 gap-4">
-          <div className="grid grid-cols-6 gap-x-4">
-            <div className="col-span-2 flex flex-col space-y-0.5 ">
+        <div className="flex flex-col space-y-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-col items-start space-y-0.5">
               <p className="font-medium text-xs text-kaiglo_grey-500">
                 Full Name
               </p>
               <p className="text-sm">{firstName + " " + lastName}</p>
             </div>
-            <div className="col-span-2 flex flex-col space-y-0.5 ">
+            <div className="flex flex-col items-start space-y-0.5">
               <p className="font-medium text-xs text-kaiglo_grey-500">
                 Phone Number
               </p>
               <p className="text-sm">{phoneNumber}</p>
             </div>
-            <div className="col-span-2 flex flex-col space-y-0.5  h-12 overflow-hidden">
+            <div className="flex flex-col items-start space-y-0.5 h-12 overflow-hidden">
               <p className="font-medium text-xs text-kaiglo_grey-500">
                 Address
               </p>
@@ -123,16 +123,16 @@ const AddressCard = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-6 gap-x-4">
-            <div className="flex flex-col space-y-0.5 col-span-2 w-full">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-col items-start space-y-0.5">
               <p className="font-medium text-xs text-kaiglo_grey-500">City</p>
               <p className="text-sm">{city}</p>
             </div>
-            <div className="flex flex-col space-y-0.5 col-span-2 w-full">
+            <div className="flex flex-col items-start space-y-0.5">
               <p className="font-medium text-xs text-kaiglo_grey-500">State</p>
               <p className="text-sm">{state}</p>
             </div>
-            <div className="flex space-x-3 col-span-2">
+            <div className="flex space-x-3 justify-start lg:justify-end mt-2 lg:mt-0">
               <Button
                 variant="secondary"
                 className="py-2 px-4 font-medium"

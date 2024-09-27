@@ -29,9 +29,6 @@ export default function Home() {
       AppDealsProducts: dynamic(
         () => import("@/components/landingPage/AppDealsProducts"),
       ),
-      TertiaryPromotions: dynamic(
-        () => import("@/components/landingPage/TertiaryPromotions"),
-      ),
       NewArrivalProducts: dynamic(
         () => import("@/components/landingPage/NewArrivalProducts"),
       ),
@@ -48,11 +45,11 @@ export default function Home() {
 
   return (
     <HomepageLayout>
-      <div className="space-y-20 mb-20 overflow-x-hidden">
+      <div className="lg:space-y-20 space-y-10 mb-20 overflow-x-hidden">
         <Suspense fallback={<div>Loading Sales...</div>}>
           <components.PromotionGrid />
           <components.CategoryGrid />
-          <components.SecondaryPromotionGrid />
+          <components.SecondaryPromotionGrid saleName="INDEPENDENCE_DAY" />
         </Suspense>
 
         <Suspense fallback={<div>Loading Flash Sale...</div>}>
@@ -65,10 +62,6 @@ export default function Home() {
 
         <Suspense fallback={<div>Loading Top Selling Products...</div>}>
           <components.TopSellingProducts />
-        </Suspense>
-
-        <Suspense fallback={<div>Loading Tertiary Promotions...</div>}>
-          <components.TertiaryPromotions />
         </Suspense>
 
         <Suspense fallback={<div>Loading Group Buy Products...</div>}>
@@ -92,7 +85,7 @@ export default function Home() {
         </Suspense>
 
         <div className="hidden lg:flex flex-col gap-y-4">
-          <div className="bg-white flex flex-col items-center lg:mx-8 xl:mx-14 mx-4 rounded-lg py-10 px-16 gap-y-4 text-center">
+          <div className="bg-white flex flex-col items-center lg:mx-8 mx-4 rounded-lg py-10 px-16 gap-y-4 text-center">
             <p className="text-sm">We’d love to hear what you think!</p>
             <Button
               variant="outline"
@@ -102,7 +95,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="bg-white flex flex-col items-center lg:mx-8 xl:mx-14 mx-4 rounded-lg py-10 px-16 gap-y-4 text-center">
+          <div className="bg-white flex flex-col items-center lg:mx-8 mx-4 rounded-lg py-10 px-16 gap-y-4 text-center">
             <p className="font-medium text-lg">
               Kaiglo makes online shopping in Nigeria simple and convenient.
             </p>

@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -22,9 +23,10 @@ const EditAddressDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[361px] md:w-[563px]">
+      <DialogContent className="lg:w-[361px] md:w-[563px]">
         <DialogHeader>
           <DialogTitle>Update Address</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <UpdateAddressForm
           stateAndCities={statesAndCities ?? []}

@@ -27,9 +27,10 @@ const LogoutDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[400px] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
+      <DialogContent className="lg:w-[400px] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0">
         <DialogHeader>
           <DialogTitle>Log out</DialogTitle>
+          <DialogDescription />
           <DialogDescription className="py-4">
             Are you sure you want to continue with this action?
           </DialogDescription>

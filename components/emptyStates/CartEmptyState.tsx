@@ -1,12 +1,19 @@
 import Image from "next/image";
 import Cart from "@/public/images/cart.svg";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const CartEmptyState = () => {
   return (
     <div className="h-[calc(100vh-30rem)] col-span-full flex flex-col items-center justify-center space-y-4">
       <div className="gap-2.5 flex flex-col items-center">
-        <Image src={Cart} alt="cart image" className="w-14 h-14 opacity-30" />
+        <Image
+          src={Cart}
+          alt="cart image"
+          className="w-14 h-14 opacity-30"
+          width={56}
+          height={56}
+        />
         <p className="font-bold">Your cart is empty.</p>
       </div>
 
@@ -15,9 +22,11 @@ const CartEmptyState = () => {
         <p>You will find a lot of interesting products on the website.</p>
       </div>
 
-      <Button variant="secondary" className="w-36 font-medium">
-        Browse Products
-      </Button>
+      <Link href="/">
+        <Button variant="secondary" className="w-36 font-medium">
+          Browse Products
+        </Button>
+      </Link>
     </div>
   );
 };

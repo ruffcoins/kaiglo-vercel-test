@@ -16,24 +16,31 @@ import Notification from "@/public/images/notification-bell.svg";
 import Shipping from "@/public/images/shipping.svg";
 import Settings from "@/public/images/cog.svg";
 import Logout from "@/public/images/logout-red.svg";
+import Auth from "@/utils/auth";
+
+const isLoggedIn = Auth.isAuthenticated();
 
 // Landing page categories menu
 export const landingCategoriesMenu = [
   {
     id: "men_fashion",
     name: "Men",
+    href: "/category/MEN'S FASHION",
   },
   {
     id: "women_fashion",
     name: "Women",
+    href: "/category/WOMEN'S FASHION",
   },
   {
     id: "phones_and_tablets",
     name: "Phones & Tablets",
+    href: "/category/PHONES & TABLETS",
   },
   {
     id: "electronics",
     name: "Electronics",
+    href: "/category/CONSUMER ELECTRONICS",
   },
   {
     id: "office_and_school",
@@ -42,6 +49,7 @@ export const landingCategoriesMenu = [
   {
     id: "kids_and_toys",
     name: "Kids & Toys",
+    href: "/category/KIDS AND TOYS",
   },
   {
     id: "beauty_and_health",
@@ -774,7 +782,7 @@ export const bottomNavMenu = [
   },
   {
     title: "Account",
-    link: "/app/dashboard",
+    link: isLoggedIn ? "/app/dashboard" : "/auth/authenticate",
     activeIcon: ActiveAccount,
     inactiveIcon: InactiveAccount,
   },

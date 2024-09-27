@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -28,8 +29,9 @@ const ReviewOrder = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[500px]">
+      <DialogContent className="lg:w-[500px]">
         <DialogTitle>How did you feel about this product</DialogTitle>
+        <DialogDescription />
         <div className="space-y-6 mt-4">
           <div className="flex items-center space-x-4">
             <Image

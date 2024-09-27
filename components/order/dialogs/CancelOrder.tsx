@@ -3,7 +3,12 @@
 import ControlledModifiedSelect from "@/components/ControlledElements/ControlledModifiedSelect";
 import ControlledModifiedTextArea from "@/components/ControlledElements/ControlledModifiedTextArea";
 import ModifiedButton from "@/components/shared/ModifiedButton";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import useUpdateOrderStatus from "@/hooks/mutation/order/updateOrderStatus";
 import {
   IUpdateOrderStatusDTO,
@@ -71,8 +76,9 @@ const CancelOrderDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[400px]">
+      <DialogContent className="lg:w-[400px]">
         <DialogTitle>Cancel Order</DialogTitle>
+        <DialogDescription />
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 space-y-4 mt-4">

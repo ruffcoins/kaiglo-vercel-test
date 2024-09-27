@@ -14,6 +14,7 @@ import useProductDetail from "@/hooks/useProductDetail";
 import { useState } from "react";
 import { AuthDialog } from "../auth/dialogs/AuthDialog";
 import EnterOtp from "../auth/dialogs/EnterOtp";
+import { useGetRatingAndReviewSummary } from "@/hooks/queries/products/getRatingSummary";
 
 const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
   const {
@@ -26,6 +27,7 @@ const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
     openProductSelectionDialog,
     setOpenProductSelectionDialog,
   } = useProductDetail(productId);
+  const { ratingAndReviewSummary } = useGetRatingAndReviewSummary(productId);
 
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -34,7 +36,7 @@ const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-5 lg:mx-8 xl:mx-14 mx-4">
+      <div className="grid grid-cols-12 lg:gap-5 lg:mx-8">
         <div className="lg:col-span-5 col-span-12">
           <ImageGallery
             images={images}
@@ -43,16 +45,17 @@ const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
             price={0}
           />
         </div>
-        <div className="lg:col-span-7 col-span-12 rounded-2xl p-6 bg-white">
+        <div className="lg:col-span-7 col-span-12 lg:rounded-2xl p-4 lg:p-6 bg-white">
           <div className="flex flex-col justify-between h-full">
             <div className="space-y-4">
               <h1 className="font-bold lg:text-2xl">{data?.response.name}</h1>
 
               <div className="flex lg:flex-row flex-col justify-between space-y-2 lg:space-y-0">
                 <div className="flex space-x-2 items-center">
-                  <Rating rating={4.5} />
+                  <Rating rating={ratingAndReviewSummary?.averageRating || 0} />
                   <p className="text-sm text-kaiglo_grey-placeholder">
-                    (30 verified reviews)
+                    ({ratingAndReviewSummary?.totalNumberOfReviews || 0}{" "}
+                    verified reviews)
                   </p>
                 </div>
 
@@ -64,14 +67,14 @@ const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
                 </p>
               </div>
 
-              <div className="border border-kaiglo_grey-disabled rounded-lg p-4">
+              <div className="lg:border border-kaiglo_grey-disabled rounded-lg lg:p-4 py-2">
                 {data?.response.productColors[0].productPriceDetails[0]
                   .discount ? (
                   <div className="space-y-2">
                     <p className="font-bold text-lg lg:text-2xl">
                       {getPriceRange(newPrices)}
                     </p>
-
+                    {/*  */}
                     <div className="flex items-center space-x-2">
                       <span className="font-medium line-through text-kaiglo_grey-placeholder h-full">
                         ₦{prices[0].toLocaleString()}
@@ -94,7 +97,7 @@ const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
                 )}
               </div>
 
-              <div className="border border-kaiglo_grey-disabled rounded-lg p-4 space-y-2">
+              <div className="lg:border border-kaiglo_grey-disabled rounded-lg lg:p-4 space-y-2">
                 <p className="font-medium">Select Colour, Size</p>
 
                 <div className="flex justify-between items-center">
@@ -118,21 +121,26 @@ const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
                 </div>
               </div>
 
-              <div className="border border-kaiglo_grey-disabled rounded-lg p-4 space-y-2">
+              <div className="lg:border border-kaiglo_grey-disabled rounded-lg lg:p-4 space-y-2 py-2">
                 <div className="flex space-x-2">
                   <Image
                     src={ShippingGreen}
                     alt="Shipping green"
                     className="w-6 h-6"
+                    width={24}
+                    height={24}
                   />
                   <p className="font-medium">Door Delivery</p>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-3 justify-between text-sm text-kaiglo_grey-base gap-x-8 gap-y-4">
-                  <p className="">Pay on Delivery Available - Lagos (IKEJA)</p>
-                  <p className="lg:text-center order-last">2-3 Days</p>
-                  <p className="lg:text-center text-black font-bold lg:order-last text-end">
-                    FREE
+                <div className="grid grid-cols-5 justify-between items-center text-sm text-kaiglo_grey-base gap-x-8 gap-y-4">
+                  <div className="col-span-3 space-y-1 flex flex-col lg:flex-row lg:justify-between items-start lg:items-center">
+                    <p className="">Pay on Delivery Available - Lagos</p>
+                    <p className="lg:text-center order-last">2-7 Days</p>
+                  </div>
+
+                  <p className="col-span-2 lg:text-center text-black font-bold lg:order-last text-end">
+                    From ₦3,000
                   </p>
                 </div>
               </div>
@@ -154,7 +162,13 @@ const ProductDetailsIntroduction = ({ productId }: { productId: string }) => {
               >
                 Buy Now
               </Button>
-              <Image src={Whatsapp} alt="Whatsapp" className="w-12 h-12" />
+              <Image
+                src={Whatsapp}
+                alt="Whatsapp"
+                className="w-12 h-12"
+                width={48}
+                height={48}
+              />
             </div>
           </div>
         </div>

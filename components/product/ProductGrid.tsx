@@ -45,13 +45,13 @@ const ProductGrid = ({
                 ? product.productColors[0].productPriceDetails[0].price
                 : undefined
             }
-            rating={5}
             imageUrl={product.productUrl}
             sold={product.sold}
             category={product.category}
             discount={product.productColors[0].productPriceDetails[0].discount}
             kaigloSale={product.kaigloSale as string}
             featured={product.featured}
+            productViews={product.productViews}
           />
         </Suspense>
       ))}

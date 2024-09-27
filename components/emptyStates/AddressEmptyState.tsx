@@ -10,7 +10,13 @@ const AddressEmptyState = ({
 }) => {
   return (
     <div className="h-[calc(100vh-24rem)] col-span-full flex flex-col items-center justify-center space-y-4">
-      <Image src={Shipping} alt="order box" className="w-14 h-14" />
+      <Image
+        src={Shipping}
+        alt="order box"
+        className="w-14 h-14"
+        width={56}
+        height={56}
+      />
       <p className="font-bold">You have not set up any address yet.</p>
       <Button
         variant="primary"

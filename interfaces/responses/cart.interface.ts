@@ -5,7 +5,7 @@ export interface UpdateCartItemResponse {
   message: string;
 }
 
-interface ShippingCost {
+export interface ShippingCost {
   name: string;
   price: string;
   paidOnDelivery: boolean;

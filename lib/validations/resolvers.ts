@@ -6,6 +6,7 @@ import {
   addAddressSchema,
   updateAddressSchema,
   updateOrderStatusSchema,
+  updateUserSchema,
 } from "@/lib/validations/schemas";
 
 /*********** SIGN UP FORM RESOLVER ***********/
@@ -24,3 +25,5 @@ export const addAddressResolver = yupResolver(addAddressSchema);
 export const updateAddressResolver = yupResolver(updateAddressSchema);
 
 export const updateOrderStatusResolver = yupResolver(updateOrderStatusSchema);
+
+export const updateUserResolver = yupResolver(updateUserSchema);

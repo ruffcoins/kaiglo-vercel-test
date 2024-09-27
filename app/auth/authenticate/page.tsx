@@ -66,7 +66,13 @@ const Auth = () => {
               variant={"outline"}
               className="flex items-center justify-center space-x-2 text-kaiglo_grey-base text-base h-12 rounded-2xl mx-auto w-fit px-3 py-3.5 border-kaiglo_grey-disabled"
             >
-              <Image src={Google} alt="google icon" className="w-6 h-6" />
+              <Image
+                src={Google}
+                alt="google icon"
+                className="w-6 h-6"
+                width={24}
+                height={24}
+              />
             </Button>
           </div>
         </div>

@@ -7,13 +7,16 @@ import { useGroupBuyProducts } from "@/hooks/queries/products/groupBuyProducts";
 import ProductCardSkeleton from "../shared/ProductCardSkeleton";
 import useProductRowLength from "@/hooks/useProductRowLength";
 import ProductCard from "../product/ProductCard";
+import { useRouter } from "next/navigation";
 
 const GroupBuyProducts = () => {
+  const router = useRouter();
+
   const { length } = useProductRowLength();
   const {
     groupBuyProducts,
-    fetchingGroupBuyProducts,
-    groupBuyProductsError,
+    isFetching: fetchingGroupBuyProducts,
+    error: groupBuyProductsError,
     refetchGroupBuyProducts,
   } = useGroupBuyProducts();
 
@@ -28,7 +31,7 @@ const GroupBuyProducts = () => {
 
   if (fetchingGroupBuyProducts) {
     return (
-      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+      <div className="lg:px-8 px-4 space-y-5">
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
           {Array.from({ length }).map((_, index) => (
             <ProductCardSkeleton key={index} />
@@ -39,13 +42,14 @@ const GroupBuyProducts = () => {
   }
 
   return (
-    groupBuyProducts.length > 0 && (
-      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+    groupBuyProducts?.length > 0 && (
+      <div className="lg:px-8 px-4 space-y-5">
         <div className="flex justify-between items-center">
           <h1 className="font-medium text-base lg:text-[32px]">Group Buy</h1>
           <Button
             variant="attention"
-            className="rounded-full font-medium disabled:cursor-wait"
+            className="rounded-full font-medium disabled:cursor-wait text-sm lg:text-base"
+            onClick={() => router.push("/product/group-buy")}
           >
             More Products{" "}
             <ChevronRightIcon className="w-5 h-5 hidden lg:block" />
@@ -68,7 +72,6 @@ const GroupBuyProducts = () => {
                   : undefined
               }
               category={product.category}
-              rating={5}
               discount={
                 product.productColors[0].productPriceDetails[0].discount
               }
@@ -77,6 +80,8 @@ const GroupBuyProducts = () => {
               sales={product.sales}
               sold={product.sold}
               featured={product.featured}
+              cartImageColor="attention"
+              productViews={product.productViews}
             />
           ))}
         </div>

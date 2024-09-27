@@ -9,6 +9,8 @@ const WishlistEmptyState = () => {
           src={EmptyHeart}
           alt="wishlist icon"
           className="w-14 h-14 opacity-20"
+          width={56}
+          height={56}
         />
         <p className="font-medium text-lg">This list is empty.</p>
       </div>

@@ -27,12 +27,17 @@ const useUpdateOrderStatus = (orderId: string) => {
           variant: "destructive",
           actionExists: false,
         });
+      } else {
+        showToast({
+          altText: "Update Order Status",
+          title: "Something went wrong!",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+          actionExists: false,
+        });
       }
+      throw error;
     }
-    return postRequest<IUpdateOrderStatusDTO, UpdateOrderStatusResponse>({
-      url: `/order/status`,
-      payload,
-    });
   };
 
   const { mutate, mutateAsync, isLoading, ...rest } = useMutation({
@@ -40,6 +45,7 @@ const useUpdateOrderStatus = (orderId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries(["user"]);
       queryClient.invalidateQueries(["order-details", orderId]);
+      queryClient.invalidateQueries(["user-orders"]);
 
       showToast({
         altText: "Update Order Status",

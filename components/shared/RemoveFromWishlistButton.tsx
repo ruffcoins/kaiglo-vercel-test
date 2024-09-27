@@ -16,7 +16,13 @@ const RemoveFromWishlistButton = ({ id }: { id: string }) => {
         className="relative w-10 h-10 p-2 rounded-full cursor-pointer bg-kaiglo_critical-100"
         onClick={handleRemoveFromWishlist}
       >
-        <Image src={Trash} alt="wishlist icon" className="w-6 h-6" />
+        <Image
+          src={Trash}
+          alt="wishlist icon"
+          className="w-6 h-6"
+          width={24}
+          height={24}
+        />
       </div>
 
       {removeFromWishlist && (

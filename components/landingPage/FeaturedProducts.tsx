@@ -7,13 +7,15 @@ import ErrorComponent from "@/components/shared/ErrorComponent";
 import useProductRowLength from "@/hooks/useProductRowLength";
 import ProductCardSkeleton from "../shared/ProductCardSkeleton";
 import ProductCard from "../product/ProductCard";
+import { useRouter } from "next/navigation";
 
 const FeaturedProducts = () => {
   const { length } = useProductRowLength();
+  const router = useRouter();
   const {
-    fetchingFeaturedProducts,
     featuredProducts,
-    featuredProductsError,
+    isFetching: fetchingFeaturedProducts,
+    error: featuredProductsError,
     refetchFeaturedProducts,
   } = useFeaturedProducts();
 
@@ -28,7 +30,7 @@ const FeaturedProducts = () => {
 
   if (fetchingFeaturedProducts) {
     return (
-      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+      <div className="lg:lg:px-8 px-4 space-y-5">
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
           {Array.from({ length }).map((_, index) => (
             <ProductCardSkeleton key={index} />
@@ -39,15 +41,16 @@ const FeaturedProducts = () => {
   }
 
   return (
-    featuredProducts.length > 0 && (
-      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+    featuredProducts?.length > 0 && (
+      <div className="lg:lg:px-8 px-4 space-y-5">
         <div className="flex justify-between items-center">
           <h1 className="font-medium text-base lg:text-[32px]">
             Featured Products
           </h1>
           <Button
             variant="purple"
-            className="rounded-full font-medium disabled:cursor-wait"
+            className="rounded-full font-medium disabled:cursor-wait text-sm lg:text-base"
+            onClick={() => router.push("/product/featured")}
           >
             More Products{" "}
             <ChevronRightIcon className="w-5 h-5 hidden lg:block" />
@@ -70,7 +73,6 @@ const FeaturedProducts = () => {
                   : undefined
               }
               category={product.category}
-              rating={5}
               discount={
                 product.productColors[0].productPriceDetails[0].discount
               }
@@ -79,6 +81,8 @@ const FeaturedProducts = () => {
               sales={product.sales}
               sold={product.sold}
               featured={product.featured}
+              cartImageColor="purple"
+              productViews={product.productViews}
             />
           ))}
         </div>

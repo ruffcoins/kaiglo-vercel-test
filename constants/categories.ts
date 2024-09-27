@@ -12,16 +12,34 @@ import TableDesk from "@/public/images/table-and-desk.jpg";
 import Kitchen from "@/public/images/kitchen.jpg";
 
 export const categories = [
-  { name: "Women Fashion", products: 1780, image: WomenFashion },
-  { name: "Men Fashion", products: 1780, image: MenFashion },
-  { name: "Electronics", products: 1780, image: Electronics },
-  { name: "Beauty & Health", products: 1780, image: BeautyHealth },
-  { name: "Phone & Tablets", products: 1780, image: PhoneTablets },
-  { name: "Office & School", products: 1780, image: OfficeSchool },
-  { name: "Groceries", products: 1780, image: Groceries },
-  { name: "Automotive", products: 1780, image: Automotive },
-  { name: "Luggage", products: 1780, image: Luggage },
-  { name: "Sports", products: 1780, image: Sports },
-  { name: "Table & Desk", products: 1780, image: TableDesk },
-  { name: "Kitchen", products: 1780, image: Kitchen },
+  { id: 1, name: "WOMEN'S FASHION", image: WomenFashion },
+  { id: 2, name: "MEN'S FASHION", products: 1780, image: MenFashion },
+  { id: 3, name: "CONSUMER ELECTRONICS", products: 1780, image: Electronics },
+  { id: 4, name: "HEALTH & BEAUTY", products: 1780, image: BeautyHealth },
+  { id: 5, name: "PHONES & TABLETS", products: 1780, image: PhoneTablets },
+  { id: 6, name: "OFFICE AND SCHOOL", products: 1780, image: OfficeSchool },
+  { id: 7, name: "GROCERIES", products: 1780, image: Groceries },
+  { id: 8, name: "AUTOMOTIVE", products: 1780, image: Automotive },
+  { id: 9, name: "LUGGAGE", products: 1780, image: Luggage },
+  { id: 10, name: "SPORTS", products: 1780, image: Sports },
+  { id: 11, name: "TABLE & DESK", products: 1780, image: TableDesk },
+  { id: 12, name: "KITCHEN", products: 1780, image: Kitchen },
+  { id: 13, name: "LIVESTOCK", products: 1780, image: Kitchen },
+  {
+    id: 14,
+    name: "CHILDREN'S CLOTHING & SHOES",
+    products: 1780,
+    image: Luggage,
+  },
+  { id: 15, name: "FOOD & DRINKS", products: 1780, image: Groceries },
+  { id: 16, name: "OLD WOMEN", products: 1780, image: WomenFashion },
+];
+
+export const filterCategories = [
+  { id: 1, name: "Women's Fashion" },
+  { id: 2, name: "Men's Fashion" },
+  { id: 3, name: "Phones & Tablets" },
+  { id: 4, name: "Consumer Electronics" },
+  { id: 5, name: "Home & Gardens" },
+  { id: 6, name: "Children's Clothing & Shoes" },
 ];

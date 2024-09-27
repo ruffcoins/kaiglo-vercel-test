@@ -3,16 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { ITopSellingProductResponse } from "@/interfaces/responses/product.interface";
 import { IProduct } from "@/interfaces/product.interface";
 
-export const useTopSellingProducts = () => {
+export const useTopSellingProducts = (page: number) => {
   const { data, isFetching, refetch, isSuccess, isError, remove, isPaused } =
     useQuery(
-      ["top-selling-products"],
+      ["top-selling-products", page],
       () =>
         getRequest<ITopSellingProductResponse>({
-          url: "product/top-sales/0",
+          url: `product/top-sales/${page}`,
         }),
       {
         staleTime: 1000 * 60 * 60,
+        cacheTime: 1000 * 60 * 30,
       },
     );
 

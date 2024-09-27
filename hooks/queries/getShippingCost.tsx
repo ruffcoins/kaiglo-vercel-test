@@ -15,7 +15,7 @@ export const useGetShippingCost = (lga: string, state: string) => {
     remove,
     isPaused,
   } = useQuery(
-    ["shipping-cost"],
+    ["shipping-cost", lga, state],
     () =>
       getRequestParams<{ lga: string; state: string }, GetShippingCostResponse>(
         {
@@ -25,6 +25,8 @@ export const useGetShippingCost = (lga: string, state: string) => {
       ),
     {
       enabled: !!lga && !!state,
+      staleTime: 1000 * 60 * 60,
+      cacheTime: 1000 * 60 * 60,
     },
   );
 

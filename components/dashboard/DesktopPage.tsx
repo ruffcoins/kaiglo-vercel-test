@@ -21,6 +21,7 @@ import TopupInfoConfirmation from "../rewards/TopupInfoConfirmation";
 import { useCartContext } from "@/contexts/CartContext";
 import { useUserWallet } from "@/hooks/queries/wallet/getUserWallet";
 import { PaymentProcessingDialog } from "../shared/PaymentProcessingDialog";
+import { userOrders } from "@/hooks/queries/order";
 
 const DesktopPage = () => {
   const { user } = useFetchUserProfile();
@@ -37,14 +38,17 @@ const DesktopPage = () => {
     handleTopUpSubmit,
     handleSecondConfirmationClose,
   } = useTopUpDialogs();
+  const { orders } = userOrders();
 
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // useEffect(() => {
-  //   if (!isLoggedIn && typeof window !== "undefined") {
-  //     window.location.replace("/");
-  //   }
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    if (!isLoggedIn && typeof window !== "undefined") {
+      const redirectPath =
+        window.innerWidth <= 768 ? "/auth/authenticate" : "/";
+      window.location.replace(redirectPath);
+    }
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -90,7 +94,7 @@ const DesktopPage = () => {
           <Link href="/app/orders">
             <div className="border-[2px] rounded-lg border-kaiglo_grey-100 relative px-14 py-4 space-y-2 flex flex-col justify-center items-center">
               <span className="flex justify-center bg-kaiglo_critical-base rounded-full text-white text-[10px] font-medium w-4 h-4 absolute top-2 right-2">
-                4
+                {orders?.length}
               </span>
               <Image
                 src={OrderBox}

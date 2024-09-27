@@ -16,15 +16,14 @@ const useRemoveItemFromCart = () => {
     mutationFn: removeItemFromCartMutation,
     onSuccess: () => {
       queryClient.invalidateQueries(["user"]);
-
-      showToast({
-        altText: "Remove from cart",
-        title: "Product removed from cart",
-        description:
-          "The product has been removed from your cart successfully.",
-        variant: "success",
-        actionExists: false,
-      });
+      // showToast({
+      //   altText: "Remove from cart",
+      //   title: "Product removed from cart",
+      //   description:
+      //     "The product has been removed from your cart successfully.",
+      //   variant: "success",
+      //   actionExists: false,
+      // });
     },
     onError: () => {
       showToast({

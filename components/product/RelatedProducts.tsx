@@ -32,7 +32,7 @@ const RelatedProducts = ({ productId }: { productId: string }) => {
 
   if (status === "loading") {
     return (
-      <div className="lg:px-8 xl:px-14 px-4 space-y-5">
+      <div className="lg:px-8 px-4 space-y-5">
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
           {Array.from({ length }).map((_, index) => (
             <ProductCardSkeleton key={index} />
@@ -52,7 +52,7 @@ const RelatedProducts = ({ productId }: { productId: string }) => {
   }
 
   return (
-    <div className="lg:px-8 xl:px-14 px-4 space-y-5 py-10">
+    <div className="lg:px-8 px-4 space-y-5 py-10">
       <h1 className="font-medium text-base lg:text-[32px]">Related Products</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
@@ -72,13 +72,13 @@ const RelatedProducts = ({ productId }: { productId: string }) => {
                 : undefined
             }
             category={product.category}
-            rating={5}
             discount={product.productColors[0].productPriceDetails[0].discount}
             imageUrl={product.productUrl}
             kaigloSale={product.kaigloSale as string}
             sales={product.sales}
             sold={product.sold}
             featured={product.featured}
+            productViews={product.productViews}
           />
         ))}
       </div>

@@ -2,6 +2,7 @@ import AddAddressForm from "@/components/forms/address/AddAddressForm";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -19,9 +20,10 @@ const NewAddressDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[361px] md:w-[563px]">
+      <DialogContent className="lg:w-[361px] md:w-[563px]">
         <DialogHeader>
           <DialogTitle>Add New Address</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <AddAddressForm
           stateAndCities={statesAndCities ?? []}

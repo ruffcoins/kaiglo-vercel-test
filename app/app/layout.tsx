@@ -9,11 +9,13 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logout from "@/public/images/logout.svg";
 import BottomNav from "@/components/shared/BottomNav";
+import LogoutDialog from "@/components/auth/dialogs/LogoutDialog";
 
 const Layout: React.FC<AccountLayoutProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [openLogoutDialog, setOpenLogoutDialog] = useState<boolean>(false);
 
   useEffect(() => {
     const tabId = pathname.split("/")[2];
@@ -54,6 +56,7 @@ const Layout: React.FC<AccountLayoutProps> = ({ children }) => {
               <Button
                 variant="outline"
                 className="rounded-lg w-fit gap-x-1 hover:bg-kaiglo_grey-disabled"
+                onClick={() => setOpenLogoutDialog(true)}
               >
                 <Image
                   src={Logout}
@@ -77,6 +80,8 @@ const Layout: React.FC<AccountLayoutProps> = ({ children }) => {
         {children}
         <BottomNav allowCTA={false} />
       </div>
+
+      <LogoutDialog open={openLogoutDialog} setOpen={setOpenLogoutDialog} />
     </>
   );
 };

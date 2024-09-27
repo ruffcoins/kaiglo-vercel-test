@@ -13,13 +13,13 @@ import Phone from "@/public/images/phone.svg";
 import Loader from "../shared/Loader";
 import { useState } from "react";
 import OrderTrackingBottomSheet from "./OrderTrackingBottomSheet";
-import { cn } from "@/lib/utils";
+import { cn, truncate } from "@/lib/utils";
 import CancelOrderDialog from "./dialogs/CancelOrder";
 import RequestReturn from "./dialogs/RequestReturn";
 import ReviewOrder from "./dialogs/ReviewOrder";
-import useUpdateOrderStatus from "@/hooks/mutation/order/updateOrderStatus";
-import { orderStatusEnum } from "@/interfaces/dtos/order.dto.interface";
-import Auth from "@/utils/auth";
+import ProductReviewDialog from "../product/ProductReviewDialog";
+import useProductDetail from "@/hooks/useProductDetail";
+import { IProduct } from "@/interfaces/product.interface";
 
 const formatDate = (date: string) => {
   const utcMoment = moment(date, "YYYY-MM-DDTHH:mm:ss.SSSZ");
@@ -33,10 +33,11 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
   const [cancelOrder, setCancelOrder] = useState(false);
   const [returnOrder, setReturnOrder] = useState(false);
   const [reviewOrder, setReviewOrder] = useState(false);
-
+  const [openReviewDialog, setOpenReviewDialog] = useState(false);
   const { order, fetchingOrderDetails } = useOrderDetails(orderId);
-  const { updateOrderStatusAsync, updatingOrderStatus } =
-    useUpdateOrderStatus(orderId);
+  const { data, prices } = useProductDetail(
+    order?.orderItem.productId as string,
+  );
 
   if (fetchingOrderDetails)
     return (
@@ -44,16 +45,6 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
         <Loader />
       </p>
     );
-
-  const confirmOrder = async () => {
-    await updateOrderStatusAsync({
-      accessToken: Auth.getToken() as string,
-      id: orderId,
-      orderStatus: orderStatusEnum.CONFIRMED,
-      additionalMessage: "",
-      reason: "",
-    });
-  };
 
   return (
     <>
@@ -86,7 +77,9 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
               </p>
             </div>
 
-            <CallForHelp />
+            <span className="lg:block hidden">
+              <CallForHelp />
+            </span>
           </div>
 
           {/* Order Item */}
@@ -108,7 +101,10 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                   className="w-28 h-28 object-cover rounded-lg"
                 />
                 <div className="text-sm gap-y-1 flex flex-col justify-center">
-                  <h2 className="text-sm capitalize">
+                  {/* <h2 className="lg:hidden block text-sm capitalize">
+                    {truncate(order?.orderItem.productName.toLowerCase() || "", 20)}
+                  </h2> */}
+                  <h2 className="text-sm capitalize truncate max-w-[150px]">
                     {order?.orderItem.productName.toLowerCase()}
                   </h2>
                   <p className="font-bold text-sm">
@@ -151,11 +147,9 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                   <ModifiedButton
                     type="button"
                     variant="ghost"
-                    value={
-                      updatingOrderStatus ? "Please wait..." : "Confirm Order"
-                    }
+                    value={"Confirm Order"}
                     className="bg-transparent uppercase rounded-full font-medium border"
-                    onClick={confirmOrder}
+                    onClick={() => setOpenReviewDialog(true)}
                   />
                 )}
 
@@ -175,7 +169,7 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                   />
                 )}
 
-                {order?.orderStatus === "FULFILLED" && (
+                {order?.orderStatus === "CONFIRMED" && (
                   <ModifiedButton
                     type="button"
                     variant="attention"
@@ -198,7 +192,7 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                   <p className="grid grid-cols-6 text-sm">
                     <span className="col-span-2">Name</span>
                     <span className="col-span-4 font-medium">
-                      {order?.buyer}
+                      {order?.buyer?.replace(/\s+null$/, "")}
                     </span>
                   </p>
                   <p className="grid grid-cols-6 text-sm">
@@ -242,15 +236,6 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
                   {order?.appliedCoupon === null
                     ? "None"
                     : order?.appliedCoupon.toLocaleString()}
-                </span>
-              </p>
-              <p className="grid grid-cols-12">
-                <span className="lg:col-span-3 col-span-9 text-kaiglo_grey-base">
-                  Tax
-                </span>
-                <span className="col-span-3 font-medium text-end lg:text-start">
-                  {/* ₦{order?.orderItem.shippingCost?.toLocaleString() || 0.0} */}
-                  ₦{0.0}
                 </span>
               </p>
 
@@ -300,6 +285,15 @@ const OrderDetails = ({ orderId }: { orderId: string }) => {
           open={reviewOrder}
           setOpen={setReviewOrder}
           orderId={order?.id as string}
+        />
+      )}
+      {openReviewDialog && (
+        <ProductReviewDialog
+          product={data?.response as IProduct}
+          prices={prices}
+          open={openReviewDialog}
+          setOpen={setOpenReviewDialog}
+          orderId={orderId}
         />
       )}
     </>

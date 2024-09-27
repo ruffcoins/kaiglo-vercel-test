@@ -1,7 +1,13 @@
 import { useUserWallet } from "@/hooks/queries/wallet/getUserWallet";
 import { useWalletHistory } from "@/hooks/queries/wallet/walletHistory";
 import { SetStateAction, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import Loader from "./Loader";
 
 export const PaymentProcessingDialog = ({
@@ -18,14 +24,15 @@ export const PaymentProcessingDialog = ({
       setIsProcessing(false);
       refetchWalletHistory();
       refetchWallet();
-    }, 10000);
+    }, 12000);
   }, []);
 
   return (
     <Dialog open={isProcessing}>
-      <DialogContent className="w-[500px]">
+      <DialogContent className="lg:w-[500px]">
         <DialogHeader>
           <DialogTitle>Processing Payment</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <div className="flex flex-col items-center justify-center space-y-4 my-4">
           <div className="text-center">

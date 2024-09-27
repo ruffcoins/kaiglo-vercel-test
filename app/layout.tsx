@@ -44,32 +44,35 @@ const gotham = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Kaiglo - Your Online Marketplace",
+  title:
+    "Kaiglo Nigeria | Online Shopping for Electronics, Fashion, Home, Beauty & Sport",
   description:
-    "Discover top-quality Women's & Men's Fashion, Phones, Electronics, Home Decor, Office Supplies & Beauty products at Kaiglo. Enjoy secure shopping, fast delivery, and unbeatable prices. Find everything you need at Kaiglo - Your trusted online marketplace.",
-  keywords: "online shopping, marketplace, electronics, fashion, deals, Kaiglo",
-  authors: [{ name: "Kaiglo Stores Limited", url: "https://kaiglo.com" }],
+    "Kaiglo Nigeria the #1 of Online Shopping in Nigeria - Shop Online All Products : Smartphones, Appliances, Clothing... ✓ Top Brands :  Samsung, Xiaomi, Adidas... ✓ Best prices in Nigeria ✓ Order now and enjoy pay on delivery !",
+  keywords:
+    "online shopping, Nigeria, fashion, electronics, home appliances, gadgets, Kaiglo, daily deals, best prices, pay on delivery, group buy",
+  authors: [{ name: "Kaiglo Nigeria", url: "https://kaiglo.com/about" }],
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "en_NG",
     url: "https://kaiglo.com",
-    siteName: "Kaiglo",
-    title: "Kaiglo - Your Trusted Online Marketplace",
+    siteName: "Kaiglo Nigeria",
+    title:
+      "Kaiglo Nigeria | Online Shopping for Electronics, Fashion, Home, Beauty & Sport",
     description:
-      "Shop top-quality Fashion, Electronics, Home Decor & more. Secure shopping, fast delivery, unbeatable prices at Kaiglo.",
+      "Kaiglo Nigeria the #1 of Online Shopping in Nigeria - Shop Online All Products : Smartphones, Appliances, Clothing... ✓ Top Brands :  Samsung, Xiaomi, Adidas... ✓ Best prices in Nigeria ✓ Order now and enjoy pay on delivery !",
     images: [
       {
         url: "https://kg-s3-assets.s3.amazonaws.com/sidebanner/599412d4-3e59-442d-9435-f94fbd6aa7cb.jpeg",
-        alt: "Kaiglo Marketplace",
+        alt: "Kaiglo - Online Shopping in Nigeria",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     site: "@kaiglo",
-    title: "Kaiglo - Your Trusted Online Marketplace",
+    title: "Kaiglo Nigeria",
     description:
-      "Shop top-quality Fashion, Electronics, Home Decor & more. Secure shopping, fast delivery, unbeatable prices at Kaiglo.",
+      "Kaiglo Nigeria the #1 of Online Shopping in Nigeria - Shop Online All Products : Smartphones, Appliances, Clothing... ✓ Top Brands :  Samsung, Xiaomi, Adidas... ✓ Best prices in Nigeria ✓ Order now and enjoy pay on delivery !",
     images: [
       "https://kg-s3-assets.s3.amazonaws.com/sidebanner/599412d4-3e59-442d-9435-f94fbd6aa7cb.jpeg",
     ],
@@ -78,6 +81,7 @@ export const metadata: Metadata = {
     icon: "/public/favicon/favicon.ico",
     apple: "/public/favicon/apple-touch-icon.png",
   },
+  robots: "index, follow",
 };
 
 export default function RootLayout({

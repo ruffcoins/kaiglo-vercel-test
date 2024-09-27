@@ -26,6 +26,8 @@ const NotificationButton = ({
         src={NotificationBell}
         alt="notification bell icon"
         className="w-6 h-6"
+        width={24}
+        height={24}
       />
       <span
         className={cn(

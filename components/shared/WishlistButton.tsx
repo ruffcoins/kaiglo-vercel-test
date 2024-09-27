@@ -12,7 +12,13 @@ const WishlistButton = () => {
       href="/app/wishlist"
       className="relative w-12 h-12 p-3 rounded-full cursor-pointer bg-kaiglo_grey-100"
     >
-      <Image src={Wishlist} alt="wishlist icon" className="w-6 h-6" />
+      <Image
+        src={Wishlist}
+        alt="wishlist icon"
+        className="w-6 h-6"
+        width={24}
+        height={24}
+      />
       <span className="absolute -top-1 -right-1 font-medium rounded-full border border-kaiglo_grey-500 w-5 h-5 flex justify-center items-center text-[10px] bg-white">
         {user?.wishListItems.length || 0}
       </span>

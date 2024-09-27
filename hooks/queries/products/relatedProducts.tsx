@@ -14,7 +14,7 @@ export const useRelatedProducts = (category: string, productId: string) => {
     refetch,
     remove,
   } = useInfiniteQuery<IRelatedProductResponse, Error>(
-    ["related-products"],
+    ["related-products", category, productId],
     ({ pageParam = 0 }) =>
       postRequest<
         { category: string; productId: string },

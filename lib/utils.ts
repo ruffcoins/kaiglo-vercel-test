@@ -2,7 +2,12 @@ import { CartItem } from "@/interfaces/responses/user.interface";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ICacheCart } from "./cookieUtils";
-import { IProduct } from "@/interfaces/product.interface";
+import {
+  IProduct,
+  ProductColor,
+  ProductPriceDetail,
+} from "@/interfaces/product.interface";
+import { CheckoutOrderItem } from "@/interfaces/checkout.interface";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -99,3 +104,117 @@ export const copyToClipboard = (text: string) => {
     console.error("Could not copy text: ", err);
   });
 };
+
+// Define a function to transform a single ICacheCart item to CheckoutOrderItem
+export const transformCartItemToOrderItem = (
+  cartItem: ICacheCart,
+  address: string,
+  buyer: string,
+  productPriceDetail: ProductPriceDetail,
+  state: string,
+  storeId: string,
+  storeName: string,
+  userId: string,
+  gender: string = "",
+  freeShipping: boolean,
+  sales: boolean,
+  orderStatus: string = "PENDING",
+  url: string,
+): CheckoutOrderItem => {
+  return {
+    orderLines: [
+      {
+        address,
+        buyer,
+        gender,
+        orderItem: {
+          color: cartItem.color,
+          freeShipping,
+          price: cartItem.price,
+          productId: cartItem.productId,
+          productName: cartItem.productName,
+          quantity: cartItem.quantity,
+          sales,
+          size: cartItem.size,
+          url: url,
+        },
+        orderStatus,
+        productPriceDetail: {
+          id: productPriceDetail.id,
+          quantity: productPriceDetail.quantity,
+          newPrice: productPriceDetail?.newPrice,
+          price: productPriceDetail.price,
+          discount: productPriceDetail.discount,
+          size: productPriceDetail?.size || undefined,
+          ramSize: productPriceDetail?.ramSize || undefined,
+          storage: productPriceDetail?.storage || undefined,
+          sku: productPriceDetail.sku,
+        },
+        state,
+        storeId,
+        storeName,
+        userId,
+      },
+    ],
+    storeId,
+    storeName,
+  };
+};
+
+export const getSelectedProductPriceDetail = (
+  colors: ProductColor[],
+  selectedColor: string,
+  productUrl: string,
+  selectedSize?: string,
+  selectedRamSize?: string,
+  selectedStorage?: string,
+) => {
+  let priceDetail: ProductPriceDetail | undefined;
+
+  const selectedColorData = colors.find((c) => c.color.color === selectedColor);
+
+  if (!selectedColorData) {
+    console.warn("No matching color found for:", selectedColor);
+    return undefined;
+  }
+
+  priceDetail = selectedColorData?.productPriceDetails.find(
+    (d) =>
+      (d.size ?? undefined) === (selectedSize ?? undefined) &&
+      (d.ramSize ?? undefined) === (selectedRamSize ?? undefined) &&
+      (d.storage ?? undefined) === (selectedStorage ?? undefined),
+  );
+
+  if (!priceDetail) {
+    console.warn("No matching price detail found for:", {
+      selectedSize,
+      selectedRamSize,
+      selectedStorage,
+    });
+  }
+
+  return {
+    priceDetail: priceDetail || undefined,
+    url: productUrl,
+  };
+};
+
+export const capitalizeFirstLetterOfEachWord = (str: string = "") => {
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
+  });
+};
+
+export const sortOptions = [
+  { value: "popular", label: "Popular" },
+  { value: "recent", label: "Newest" },
+  { value: "l2h", label: "Price: Low to High" },
+  { value: "h2l", label: "Price: High to Low" },
+];
+
+// const getCategoryImage = (categories: Category[], category: string) => {
+//   const categoryImage = categories.find(
+//     (cat) => cat.name.toLowerCase() === category.toLowerCase(),
+//   );
+//   return categoryImage?.image;
+// };

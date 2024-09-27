@@ -8,7 +8,7 @@ import useProductDetail from "@/hooks/useProductDetail";
 
 const ProductDescription = ({ productId }: { productId: string }) => {
   return (
-    <div className="lg:mx-8 xl:mx-14 mx-4 bg-white rounded-2xl p-6 space-y-8">
+    <div className="lg:mx-8 bg-white lg:rounded-2xl lg:p-6 p-4 pb-0 space-y-8">
       <h1 className="font-medium text-3xl">Description</h1>
       <ProductSpecifications productId={productId} />
       <Description productId={productId} />
@@ -31,11 +31,13 @@ const ProductSpecifications = ({ productId }: { productId: string }) => {
         <table className="w-full text-left">
           <tbody className="space-y-4">
             {data?.response.specifications.map((specification) => (
-              <tr className="grid grid-cols-12">
-                <td className="font-semibold col-span-3">
+              <tr key={specification.name} className="grid grid-cols-12">
+                <td className="font-semibold lg:col-span-3 col-span-5 capitalize">
                   {specification.name}
                 </td>
-                <td className="capitalize">{specification.option ?? "null"}</td>
+                <td className="capitalize lg:col-span-9 col-span-7">
+                  {specification.option ?? "null"}
+                </td>
               </tr>
             ))}
           </tbody>
